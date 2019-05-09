@@ -171,3 +171,13 @@ ul {
     transform: rotate(360deg);
   }
 }
+/**login in page**/
+form {
+  margin: 300px 600px 100px 500px;
+  border: 1px solid black;
+}
+input[type="submit"] {
+  margin-left: 140px;
+  text-align: center;
+  background-color: tomato;
+}

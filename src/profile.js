@@ -7,13 +7,11 @@ import { TabContainer, TabPane, TabContent } from "react-bootstrap";
 class Profile extends React.Component {
   constructor(props, context) {
     super(props, context);
-    this.state = {
-      key: "home",
-      actives: []
-    };
+    this.state = {};
   }
 
   render() {
+    console.log(this.props);
     return (
       <TabContainer id="left-tabs-example" defaultActiveKey="first">
         <Row>
@@ -89,7 +87,7 @@ class Profile extends React.Component {
           <Col sm={9}>
             <TabContent class="tab-content">
               <TabPane eventKey="first">
-                <p>Roya Juliani</p>
+                <p>{this.props.user}</p>
                 <p>Date of Birth:</p>
                 <p>Gender: </p>
                 <p>Service Language: </p>

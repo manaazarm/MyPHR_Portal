@@ -1,61 +1,103 @@
-import React, { Component } from "react";
-import { Button, FormGroup, FormControl, FormLabel } from "react-bootstrap";
+import React from "react";
+import "./App.css";
+import ReactDOM from "react-dom";
+import Home from "./home";
+import App from "./App";
 
-export default class Login extends Component {
-  constructor(props) {
-    super(props);
+const Welcome = ({ user, onSignOut }) => {
+  // This is a dumb "stateless" component
+  return (
+    <div>
+      Welcome <strong>{user.username}</strong>!
+      <a href="javascript:;" onClick={onSignOut}>
+        Sign out
+      </a>
+    </div>
+  );
+};
 
-    this.state = {
-      email: "",
-      password: ""
-    };
+class LoginForm extends React.Component {
+  // Using a class based component here because we're accessing DOM refs
+
+  handleSignIn(e) {
+    e.preventDefault();
+    let username = this.refs.username.value;
+    let password = this.refs.password.value;
+    this.props.onSignIn(username, password);
   }
-
-  validateForm() {
-    return this.state.email.length > 0 && this.state.password.length > 0;
-  }
-
-  handleChange = event => {
-    this.setState({
-      [event.target.id]: event.target.value
-    });
-  };
-
-  handleSubmit = event => {
-    event.preventDefault();
-  };
 
   render() {
     return (
-      <div className="Login">
-        <form onSubmit={this.handleSubmit}>
-          <FormGroup controlId="email" bsSize="large">
-            <FormLabel>Email</FormLabel>
-            <FormControl
-              autoFocus
-              type="email"
-              value={this.state.email}
-              onChange={this.handleChange}
-            />
-          </FormGroup>
-          <FormGroup controlId="password" bsSize="large">
-            <FormLabel>Password</FormLabel>
-            <FormControl
-              value={this.state.password}
-              onChange={this.handleChange}
-              type="password"
-            />
-          </FormGroup>
-          <Button
-            block
-            bsSize="large"
-            disabled={!this.validateForm()}
-            type="submit"
-          >
-            Login
-          </Button>
-        </form>
+      <form onSubmit={this.handleSignIn.bind(this)}>
+        <h3 style={{ textAlign: "center" }}>Sign in</h3>
+        <p>
+          Username:{" "}
+          <input type="text" ref="username" placeholder="enter you username" />
+        </p>
+        <p>
+          Password:{" "}
+          <input type="password" ref="password" placeholder="enter password" />
+        </p>
+        <p style={{ textAlign: "center" }}>
+          <button disabled>Send Authentication Code</button>
+        </p>
+        <p style={{ textAlign: "center" }}>
+          <button disabled>Answer Security Questions</button>
+        </p>
+        <p style={{ textDecoration: "underline" }}>
+          Forgot your username or password?
+        </p>
+        <input style={{ textAlign: "center" }} type="submit" value="Login" />
+        <p style={{ textAlign: "center", textDecoration: "underline" }}>
+          Sign Up
+        </p>
+      </form>
+    );
+  }
+}
+
+class Login extends React.Component {
+  constructor(props) {
+    super(props);
+    // the initial application state
+    this.state = {
+      user: null
+    };
+  }
+
+  // App "actions" (functions that modify state)
+  signIn(username, password) {
+    // This is where you would call Firebase, an API etc...
+    // calling setState will re-render the entire app (efficiently!)
+
+    this.setState({
+      user: {
+        username,
+        password
+      }
+    });
+  }
+  signOut() {
+    // clear out user from state
+    this.setState({ user: null });
+  }
+
+  render() {
+    // Here we pass relevant state to our child components
+    // as props. Note that functions are passed using `bind` to
+    // make sure we keep our scope to App
+    return (
+      <div>
+        {this.state.user ? (
+          <Home user={this.state.user.username} />
+        ) : (
+          <LoginForm onSignIn={this.signIn.bind(this)} />
+        )}
       </div>
     );
   }
 }
+
+ReactDOM.render(Login, document.getElementById("root"));
+
+export default Login;
