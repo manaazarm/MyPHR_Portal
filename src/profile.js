@@ -103,7 +103,7 @@ class Profile extends React.Component {
                 <p>Allergies: </p>
                 <li> >></li>
                 <li> >></li>
-                <p>Risk and Safty Codes: </p>
+                <p>Risk and Safety Codes: </p>
                 <li> >></li>
               </TabPane>
               <TabPane eventKey="third">
