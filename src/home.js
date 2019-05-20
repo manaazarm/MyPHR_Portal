@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import "./App.css";
+import { userService } from "./service";
 import Profile from "./profile";
 import Episodes from "./episodes";
 import Alerts from "./alerts";
@@ -16,10 +17,27 @@ import {
 } from "react-router-dom";
 
 class Home extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      user: {},
+      users: [],
+      userInformation: []
+    };
+  }
+  componentDidMount() {
+    this.setState({
+      user: JSON.parse(localStorage.getItem("user")),
+      users: { loading: true }
+    });
+    // userService.getAll().then(users => this.setState({ users }));
+    console.log("sssss" + localStorage.getItem("user"));
+  }
+
   render() {
-    console.log(this.props);
-    let userName = this.props.user;
-    console.log("test name:" + userName);
+    const { user, users } = this.state;
+    console.log("hahah:" + user.name);
     return (
       <Router>
         <div className="App">
@@ -29,7 +47,7 @@ class Home extends Component {
               <div class="column1">
                 <img src={photo} alt="Photo" />
 
-                <h3>{this.props.user}</h3>
+                <h3>{user.name}</h3>
 
                 <div class="editor">
                   <a href="#news">Edit Primary Information</a>
@@ -78,9 +96,7 @@ class Home extends Component {
                   <Route exact path="/dashboard" component={App} />
                   <Route
                     path="/profile"
-                    render={props => (
-                      <Profile {...props} user={this.props.user} />
-                    )}
+                    render={props => <Profile {...props} user={user.name} />}
                   />
                   <Route path="/episodes" component={Episodes} />
                   <Route path="/alerts" component={Alerts} />

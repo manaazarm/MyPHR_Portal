@@ -7,11 +7,24 @@ import { TabContainer, TabPane, TabContent } from "react-bootstrap";
 class Profile extends React.Component {
   constructor(props, context) {
     super(props, context);
-    this.state = {};
+    this.state = {
+      user: {},
+      users: [],
+      userInformation: []
+    };
+  }
+  componentDidMount() {
+    this.setState({
+      user: JSON.parse(localStorage.getItem("user")),
+      users: { loading: true }
+    });
+    // userService.getAll().then(users => this.setState({ users }));
+    console.log("xxx" + localStorage.getItem("user"));
   }
 
   render() {
-    console.log(this.props);
+    const { user } = this.state;
+
     return (
       <TabContainer id="left-tabs-example" defaultActiveKey="first">
         <Row>
@@ -87,10 +100,10 @@ class Profile extends React.Component {
           <Col sm={9}>
             <TabContent class="tab-content">
               <TabPane eventKey="first">
-                <p>{this.props.user}</p>
+                <p>{user.name}</p>
                 <p>Date of Birth:</p>
-                <p>Gender: </p>
-                <p>Service Language: </p>
+                <p>Gender: {user.gender}</p>
+                <p>Service Language: {user.language}</p>
                 <p>Last Access: </p>
               </TabPane>
               <TabPane eventKey="second">

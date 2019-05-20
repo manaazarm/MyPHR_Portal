@@ -5,13 +5,15 @@ import "./App.css";
 import LoginForm from "./login.js";
 import * as serviceWorker from "./serviceWorker";
 import Home from "./home";
-
+import { PrivateRoute } from "./privateRoute";
+import { configureBackend } from "./backend";
 import { Route, BrowserRouter as Router } from "react-router-dom";
 
+configureBackend();
 const routing = (
   <Router>
     <Route path="/login" component={LoginForm} />
-    <Route path="/home" component={Home} />
+    <PrivateRoute exact path="/" component={Home} />
   </Router>
 );
 

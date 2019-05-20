@@ -1,30 +1,74 @@
 import React from "react";
 import "./App.css";
-import ReactDOM from "react-dom";
-import Home from "./home";
-import App from "./App";
+import { userService } from "./service";
 
 class LoginForm extends React.Component {
   // Using a class based component here because we're accessing DOM refs
-
+  constructor(props) {
+    super(props);
+    userService.logout();
+    this.state = {
+      username: "",
+      password: "",
+      submitted: false,
+      loading: false,
+      error: ""
+    };
+    this.handleSignIn = this.handleSignIn.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+  }
+  handleChange(e) {
+    const { name, value } = e.target;
+    this.setState({ [name]: value });
+  }
   handleSignIn(e) {
     e.preventDefault();
-    let username = this.refs.username.value;
-    let password = this.refs.password.value;
-    this.props.onSignIn(username, password);
+    this.setState({ submitted: true });
+    const { username, password, returnUrl } = this.state;
+
+    // stop here if form is invalid
+    if (!(username && password)) {
+      return;
+    }
+
+    //this.setState({ loading: true });
+    userService.login(username, password).then(
+      user => {
+        const { from } = this.props.location.state || {
+          from: { pathname: "/" }
+        };
+        this.props.history.push(from);
+      },
+      error => this.setState({ error, loading: false })
+    );
   }
 
   render() {
+    const { username, password, submitted, loading, error } = this.state;
     return (
-      <form onSubmit={this.handleSignIn.bind(this)}>
+      <form onSubmit={this.handleSignIn}>
         <h3 style={{ textAlign: "center" }}>Sign in</h3>
         <p>
           Username:{" "}
-          <input type="text" ref="username" placeholder="enter you username" />
+          <input
+            type="text"
+            name="username"
+            value={username}
+            onChange={this.handleChange}
+            ref="username"
+            placeholder="enter you username"
+          />
         </p>
         <p>
           Password:{" "}
-          <input type="password" ref="password" placeholder="enter password" />
+          <input
+            type="password"
+            name="password"
+            value={password}
+            onChange={this.handleChange}
+            ref="password"
+            placeholder="enter password"
+          />
         </p>
         <p style={{ textAlign: "center" }}>
           <button disabled>Send Authentication Code</button>
@@ -44,48 +88,4 @@ class LoginForm extends React.Component {
   }
 }
 
-class Login extends React.Component {
-  constructor(props) {
-    super(props);
-    // the initial application state
-    this.state = {
-      user: null
-    };
-  }
-
-  // App "actions" (functions that modify state)
-  signIn(username, password) {
-    // This is where you would call Firebase, an API etc...
-    // calling setState will re-render the entire app (efficiently!)
-
-    this.setState({
-      user: {
-        username,
-        password
-      }
-    });
-  }
-  signOut() {
-    // clear out user from state
-    this.setState({ user: null });
-  }
-
-  render() {
-    // Here we pass relevant state to our child components
-    // as props. Note that functions are passed using `bind` to
-    // make sure we keep our scope to App
-    return (
-      <div>
-        {this.state.user ? (
-          <Home user={this.state.user.username} />
-        ) : (
-          <LoginForm onSignIn={this.signIn.bind(this)} />
-        )}
-      </div>
-    );
-  }
-}
-
-ReactDOM.render(Login, document.getElementById("root"));
-
-export default Login;
+export default LoginForm;
