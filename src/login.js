@@ -46,44 +46,66 @@ class LoginForm extends React.Component {
   render() {
     const { username, password, submitted, loading, error } = this.state;
     return (
-      <form onSubmit={this.handleSignIn}>
-        <h3 style={{ textAlign: "center" }}>Sign in</h3>
-        <p>
-          Username:{" "}
-          <input
-            type="text"
-            name="username"
-            value={username}
-            onChange={this.handleChange}
-            ref="username"
-            placeholder="enter you username"
-          />
-        </p>
-        <p>
-          Password:{" "}
-          <input
-            type="password"
-            name="password"
-            value={password}
-            onChange={this.handleChange}
-            ref="password"
-            placeholder="enter password"
-          />
-        </p>
-        <p style={{ textAlign: "center" }}>
-          <button disabled>Send Authentication Code</button>
-        </p>
-        <p style={{ textAlign: "center" }}>
-          <button disabled>Answer Security Questions</button>
-        </p>
-        <p style={{ textDecoration: "underline" }}>
-          Forgot your username or password?
-        </p>
-        <input style={{ textAlign: "center" }} type="submit" value="Login" />
-        <p style={{ textAlign: "center", textDecoration: "underline" }}>
-          Sign Up
-        </p>
-      </form>
+      <div className="loginPage">
+        <form onSubmit={this.handleSignIn}>
+          <h3 style={{ textAlign: "center" }}>Sign in</h3>
+          <div
+            className={
+              "form-group" + (submitted && !username ? " has-error" : "")
+            }
+          >
+            <label htmlFor="username">Username</label>
+            <input
+              type="text"
+              className="form-control"
+              name="username"
+              value={username}
+              onChange={this.handleChange}
+            />
+            {submitted && !username && (
+              <div className="help-block">Username is required</div>
+            )}
+          </div>
+          <div
+            className={
+              "form-group" + (submitted && !password ? " has-error" : "")
+            }
+          >
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              className="form-control"
+              name="password"
+              value={password}
+              onChange={this.handleChange}
+            />
+            {submitted && !password && (
+              <div className="help-block">Password is required</div>
+            )}
+          </div>
+          <p style={{ textAlign: "center" }}>
+            <button disabled>Send Authentication Code</button>
+          </p>
+          <p style={{ textAlign: "center" }}>
+            <button disabled>Answer Security Questions</button>
+          </p>
+          <p style={{ textDecoration: "underline" }}>
+            Forgot your username or password?
+          </p>
+          <div className="form-group">
+            <button className="btn btn-primary" disabled={loading}>
+              Login
+            </button>
+            {loading && (
+              <img src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+            )}
+          </div>
+          <p style={{ textAlign: "center", textDecoration: "underline" }}>
+            Sign Up
+          </p>
+          {error && <div className={"alert alert-danger"}>{error}</div>}
+        </form>
+      </div>
     );
   }
 }
