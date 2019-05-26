@@ -4,25 +4,32 @@ export function configureBackend() {
       id: 1,
       username: "111",
       password: "pwd1",
+      dob: "1994-02-09",
       name: "John Beker",
       gender: "male",
-      language: "English"
+      language: "English",
+      photo:
+        "https://s3.amazonaws.com/uifaces/faces/twitter/amanruzaini/128.jpg"
     },
     {
       id: 2,
       username: "112",
       password: "pwd2",
-      name: "Emile Journeal",
+      dob: "1998-09-19",
+      name: "Gsawf Journeal",
       gender: "female",
-      language: "English"
+      language: "English",
+      photo: "https://s3.amazonaws.com/uifaces/faces/twitter/kerem/128.jpg"
     },
     {
-      id: 1,
+      id: 3,
       username: "113",
       password: "pwd3",
+      dob: "1987-07-23",
       name: "Bon Kent",
       gender: "male",
-      language: "French"
+      language: "French",
+      photo: "https://s3.amazonaws.com/uifaces/faces/twitter/koridhandy/128.jpg"
     }
   ];
   let realFetch = window.fetch;
@@ -49,6 +56,7 @@ export function configureBackend() {
             let responseJson = {
               id: user.id,
               username: user.username,
+              dob: user.dob,
               gender: user.gender,
               name: user.name,
               language: user.language

@@ -7,8 +7,6 @@ import { userService } from "./service";
 import Profile from "./profile";
 import Episodes from "./episodes";
 import Alerts from "./alerts";
-import photo from "./photo.png";
-import { PropsRoute, PublicRoute, PrivateRoute } from "react-router-with-props";
 import {
   Route,
   NavLink,
@@ -22,21 +20,19 @@ class Home extends Component {
 
     this.state = {
       user: {},
-      users: [],
-      userInformation: []
+      users: []
     };
   }
   componentDidMount() {
     this.setState({
-      user: JSON.parse(localStorage.getItem("user")),
-      users: { loading: true }
+      user: JSON.parse(localStorage.getItem("user"))
     });
     // userService.getAll().then(users => this.setState({ users }));
     console.log("sssss" + localStorage.getItem("user"));
   }
 
   render() {
-    const { user, users } = this.state;
+    const { user } = this.state;
     console.log("hahah:" + user.name);
     return (
       <Router>
@@ -45,7 +41,8 @@ class Home extends Component {
           <body>
             <div class="row">
               <div class="column1">
-                <img src={photo} alt="Photo" />
+                {user.photo}
+                <img src={user.photo} alt="Photo" />
 
                 <h3>{user.name}</h3>
 
@@ -60,7 +57,7 @@ class Home extends Component {
               <div class="column2">
                 <nav class="topnav">
                   <NavLink
-                    to="/dashboard"
+                    to="/"
                     className="nav-style"
                     activeClassName="selectedLink"
                   >
@@ -93,7 +90,11 @@ class Home extends Component {
                 </nav>
 
                 <div class="main-place">
-                  <Route exact path="/dashboard" component={App} />
+                  <Route
+                    exact
+                    path="/"
+                    render={props => <App {...props} user={user.name} />}
+                  />
                   <Route
                     path="/profile"
                     render={props => <Profile {...props} user={user.name} />}

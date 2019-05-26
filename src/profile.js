@@ -3,27 +3,41 @@ import "./App.css";
 import { Col, Row, Nav, Container } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { TabContainer, TabPane, TabContent } from "react-bootstrap";
+import { userService } from "./service";
 
 class Profile extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
       user: {},
-      users: [],
-      userInformation: []
+      address: {},
+      c: {},
+      caregiver: {},
+      isLoading: true
     };
   }
+
   componentDidMount() {
     this.setState({
-      user: JSON.parse(localStorage.getItem("user")),
-      users: { loading: true }
+      user: JSON.parse(localStorage.getItem("user"))
     });
-    // userService.getAll().then(users => this.setState({ users }));
+
+    userService
+      .getAddress(JSON.parse(localStorage.getItem("user")).id)
+      .then(data => this.setState({ address: JSON.parse(data) }));
+
+    userService
+      .getCaregivers(JSON.parse(localStorage.getItem("user")).id)
+      .then(data => this.setState({ c: JSON.parse(data) }));
+
     console.log("xxx" + localStorage.getItem("user"));
+    console.log("rrr" + localStorage.getItem("address"));
+    console.log("fff" + localStorage.getItem("caregiver"));
   }
 
   render() {
-    const { user } = this.state;
+    const { user, address, c } = this.state;
+    console.log("test c:" + c.name);
 
     return (
       <TabContainer id="left-tabs-example" defaultActiveKey="first">
@@ -101,7 +115,7 @@ class Profile extends React.Component {
             <TabContent class="tab-content">
               <TabPane eventKey="first">
                 <p>{user.name}</p>
-                <p>Date of Birth:</p>
+                <p>Date of Birth: {user.dob}</p>
                 <p>Gender: {user.gender}</p>
                 <p>Service Language: {user.language}</p>
                 <p>Last Access: </p>
@@ -120,22 +134,28 @@ class Profile extends React.Component {
                 <li> >></li>
               </TabPane>
               <TabPane eventKey="third">
-                <p>Home Address: </p>
-                <p>Mailing Address: </p>
-                <p>Other Address: </p>
-                <p>Cell Phone: </p>
-                <p>Home Phone: </p>
-                <p>Email: </p>
+                <p>
+                  Home Address: {address.street_number}, {address.city},{" "}
+                  {address.country}, {address.postal_code}
+                </p>
+                <p>
+                  Mailing Address:{address.street_number}, {address.city},{" "}
+                  {address.country}, {address.postal_code}
+                </p>
+                <p>Other Address: null</p>
+                <p>Cell Phone: {address.cell_phone}</p>
+                <p>Home Phone: {address.home_phone}</p>
+                <p>Email: {address.email}</p>
               </TabPane>
               <TabPane eventKey="fourth">
                 <p>Primary Contact: </p>
-                <li> Name: </li>
-                <li> Relationship: </li>
-                <li> Home Address: </li>
-                <li> Mailing Address: </li>
-                <li> Cell Phone: </li>
-                <li> Home Phone: </li>
-                <li> Email: </li>
+                <li> Name: {c.name}</li>
+                <li> Relationship: {c.relationship}</li>
+                <li> Home Address: {c.homeAddress}</li>
+                <li> Mailing Address: {c.mailingAddress}</li>
+                <li> Cell Phone: {c.cellPhone}</li>
+                <li> Home Phone: {c.homePhone}</li>
+                <li> Email: {c.email}</li>
                 <p>Second Contact: </p>
                 <li> Name: </li>
                 <li> Relationship: </li>

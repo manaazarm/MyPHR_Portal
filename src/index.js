@@ -5,6 +5,7 @@ import "./App.css";
 import LoginForm from "./login.js";
 import * as serviceWorker from "./serviceWorker";
 import Home from "./home";
+import App from "./App";
 import { PrivateRoute } from "./privateRoute";
 import { configureBackend } from "./backend";
 import { Route, BrowserRouter as Router } from "react-router-dom";

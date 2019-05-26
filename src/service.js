@@ -4,7 +4,15 @@ import { authHeader } from "./backend";
 export const userService = {
   login,
   logout,
-  getAll
+  getAll,
+  getAddress,
+  getCaregivers,
+  getComment,
+  getDietaryRegimen,
+  getEpisodes,
+  getHealthProfile,
+  getPhysicians,
+  getPhoneNumber
 };
 
 function login(username, password) {
@@ -27,14 +35,53 @@ function login(username, password) {
       return user;
     });
 }
+function getAddress(id) {
+  return (
+    fetch(`https://5cdc6232069eb30014202d8e.mockapi.io/addresses/${id}`) //must have a place to put userId
+      // We get the API response and receive data in JSON format...
+      .then(response => response.json())
+      // ...then we update the users state
+      .then(address => {
+        localStorage.setItem("address", JSON.stringify(address));
+
+        const c = localStorage.getItem("address");
+
+        return c;
+      })
+  );
+}
+
+function getCaregivers(id) {
+  return (
+    fetch(`https://5cdc6232069eb30014202d8e.mockapi.io/caregivers/${id}`) //must have a place to put userId
+      // We get the API response and receive data in JSON format...
+      .then(response => response.json())
+      // ...then we update the users state
+      .then(caregiver => {
+        localStorage.setItem("caregiver", JSON.stringify(caregiver));
+
+        const c = localStorage.getItem("caregiver");
+        // console.log("print caregiver:" + c);
+        return c;
+      })
+  );
+}
+
+function getComment() {}
+function getDietaryRegimen() {}
+function getEpisodes() {}
+function getHealthProfile() {}
+function getPhysicians() {}
+function getPhoneNumber() {}
 
 function logout() {
   localStorage.removeItem("user");
+  //localStorage.removeItem("address");
 }
 
 function getAll() {
   const requestOptions = {
-    method: "POST",
+    method: "GET",
     headers: authHeader()
   };
   return fetch(`${config.apiUrl}/users`, requestOptions).then(handleResponse);

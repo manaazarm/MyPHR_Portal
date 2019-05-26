@@ -7,19 +7,19 @@ class App extends React.Component {
     super(props, context);
     this.state = {
       isLoading: true,
-      users: [],
+      caregiver: {},
       error: null
     };
   }
-  fetchUsers() {
+  fetchUsers(id) {
     // Where we're fetching data from
-    fetch(`http://www.mocky.io/v2/5cdc76002d0000200cf5a79f`)
+    fetch(`https://5cdc6232069eb30014202d8e.mockapi.io/caregivers/${id}`)
       // We get the API response and receive data in JSON format...
       .then(response => response.json())
       // ...then we update the users state
       .then(data =>
         this.setState({
-          users: data,
+          caregiver: data,
           isLoading: false
         })
       )
@@ -27,26 +27,25 @@ class App extends React.Component {
       .catch(error => this.setState({ error, isLoading: false }));
   }
   componentDidMount() {
-    this.fetchUsers();
+    this.fetchUsers(12);
   }
 
   render() {
-    const { isLoading, users, error } = this.state;
+    const { isLoading, caregiver, error } = this.state;
     return (
       <div>
         <h1>Today's Activities</h1>
-        {error ? <p>{error.message}</p> : null}
+
         {!isLoading ? (
-          users.map(user => {
-            const { id, name, gender } = user;
+          c => {
             return (
-              <div key={id}>
-                <p>Name: {name}</p>
-                <p>Gender: {gender}</p>
+              <div key={caregiver.id}>
+                <p>City: {caregiver.name}</p>
+                <p>Postal Code: {caregiver.relationship}</p>
                 <hr />
               </div>
             );
-          })
+          }
         ) : (
           <h3>Loading...</h3>
         )}
@@ -54,5 +53,4 @@ class App extends React.Component {
     );
   }
 }
-
 export default App;
