@@ -1,8 +1,10 @@
 import config from "config";
 import { authHeader } from "./backend";
 
+import { Client } from "./models/client.py";
 export const userService = {
   login,
+  newLogin,
   logout,
   getAll,
   getAddress,
@@ -35,6 +37,32 @@ function login(username, password) {
       return user;
     });
 }
+
+//fetch from real api
+function newLogin(username, password) {
+  //each time fresh local storage
+  localStorage.removeItem("yy");
+  const requestOptions = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password })
+  };
+
+  return fetch(
+    `http://localhost:5000/login?username=${username}&password=${password}`
+  )
+    .then(handleResponse)
+    .then(user => {
+      // login successful if there's a user in the response
+      if (user) {
+        // store user details and basic auth credentials in local storage
+        // to keep user logged in between page refreshes
+        localStorage.setItem("yy", JSON.stringify(user));
+        console.log(localStorage.getItem("yy"));
+      }
+      return user;
+    });
+}
 function getAddress(id) {
   return (
     fetch(`https://5cdc6232069eb30014202d8e.mockapi.io/addresses/${id}`) //must have a place to put userId
@@ -50,6 +78,7 @@ function getAddress(id) {
       })
   );
 }
+//https://5cdc6232069eb30014202d8e.mockapi.io/addresses/${id}
 
 function getCaregivers(id) {
   return (

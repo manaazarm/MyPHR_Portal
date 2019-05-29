@@ -30,7 +30,8 @@ export function configureBackend() {
       gender: "male",
       language: "French",
       photo: "https://s3.amazonaws.com/uifaces/faces/twitter/koridhandy/128.jpg"
-    }
+    },
+    {}
   ];
   let realFetch = window.fetch;
   window.fetch = function(url, opts) {
@@ -59,7 +60,8 @@ export function configureBackend() {
               dob: user.dob,
               gender: user.gender,
               name: user.name,
-              language: user.language
+              language: user.language,
+              photo: user.photo
             };
             resolve({
               ok: true,
@@ -101,7 +103,7 @@ export function configureBackend() {
 }
 export function authHeader() {
   // return authorization header with basic auth credentials
-  let user = JSON.parse(localStorage.getItem("user"));
+  let user = JSON.parse(localStorage.getItem("yy"));
 
   if (user && user.authdata) {
     return { Authorization: "Basic " + user.authdata };

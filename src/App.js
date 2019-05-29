@@ -31,24 +31,9 @@ class App extends React.Component {
   }
 
   render() {
-    const { isLoading, caregiver, error } = this.state;
     return (
       <div>
         <h1>Today's Activities</h1>
-
-        {!isLoading ? (
-          c => {
-            return (
-              <div key={caregiver.id}>
-                <p>City: {caregiver.name}</p>
-                <p>Postal Code: {caregiver.relationship}</p>
-                <hr />
-              </div>
-            );
-          }
-        ) : (
-          <h3>Loading...</h3>
-        )}
       </div>
     );
   }

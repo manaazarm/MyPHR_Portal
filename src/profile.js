@@ -29,10 +29,12 @@ class Profile extends React.Component {
     userService
       .getCaregivers(JSON.parse(localStorage.getItem("user")).id)
       .then(data => this.setState({ c: JSON.parse(data) }));
+    //userService.newLogin("H7777666699", "mypass");
 
     console.log("xxx" + localStorage.getItem("user"));
     console.log("rrr" + localStorage.getItem("address"));
     console.log("fff" + localStorage.getItem("caregiver"));
+    console.log("yy:" + localStorage.getItem("yy"));
   }
 
   render() {

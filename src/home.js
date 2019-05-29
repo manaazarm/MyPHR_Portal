@@ -25,15 +25,15 @@ class Home extends Component {
   }
   componentDidMount() {
     this.setState({
-      user: JSON.parse(localStorage.getItem("user"))
+      user: JSON.parse(localStorage.getItem("yy"))
     });
     // userService.getAll().then(users => this.setState({ users }));
-    console.log("sssss" + localStorage.getItem("user"));
+    console.log("sssss" + localStorage.getItem("yy"));
   }
 
   render() {
     const { user } = this.state;
-    console.log("hahah:" + user.name);
+    console.log("hahah:" + user.client_id);
     return (
       <Router>
         <div className="App">

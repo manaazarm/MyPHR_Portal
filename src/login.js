@@ -32,7 +32,8 @@ class LoginForm extends React.Component {
     }
 
     //this.setState({ loading: true });
-    userService.login(username, password).then(
+
+    userService.newLogin(username, password).then(
       user => {
         const { from } = this.props.location.state || {
           from: { pathname: "/" }
@@ -41,6 +42,7 @@ class LoginForm extends React.Component {
       },
       error => this.setState({ error, loading: false })
     );
+    this.props.history.push("/");
   }
 
   render() {
