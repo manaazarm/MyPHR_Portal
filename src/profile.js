@@ -13,33 +13,47 @@ class Profile extends React.Component {
       address: {},
       c: {},
       caregiver: {},
-      isLoading: true
+      isLoading: true,
+      healthProfile: []
     };
   }
 
   componentDidMount() {
     this.setState({
-      user: JSON.parse(localStorage.getItem("user"))
+      user: JSON.parse(localStorage.getItem("yy"))
     });
 
+    //mock api calls
+    /*
     userService
       .getAddress(JSON.parse(localStorage.getItem("user")).id)
       .then(data => this.setState({ address: JSON.parse(data) }));
+     
 
     userService
       .getCaregivers(JSON.parse(localStorage.getItem("user")).id)
       .then(data => this.setState({ c: JSON.parse(data) }));
-    //userService.newLogin("H7777666699", "mypass");
+     */
+
+    //real api calls
+    userService
+      .getHealthProfile(
+        JSON.parse(localStorage.getItem("yy")).client_id,
+        JSON.parse(localStorage.getItem("yy")).token
+      )
+      .then(data => this.setState({ healthProfile: data }));
 
     console.log("xxx" + localStorage.getItem("user"));
     console.log("rrr" + localStorage.getItem("address"));
     console.log("fff" + localStorage.getItem("caregiver"));
+
+    //user from real api
     console.log("yy:" + localStorage.getItem("yy"));
   }
 
   render() {
-    const { user, address, c } = this.state;
-    console.log("test c:" + c.name);
+    const { user, address, c, healthProfile } = this.state;
+    console.log("test c:" + healthProfile);
 
     return (
       <TabContainer id="left-tabs-example" defaultActiveKey="first">
@@ -130,10 +144,34 @@ class Profile extends React.Component {
                 <li> diagnosed on: </li>
                 <li> diagnosed by: </li>
                 <p>Allergies: </p>
-                <li> >></li>
-                <li> >></li>
+
+                <div>
+                  {healthProfile.map((m, index) => (
+                    <div>
+                      {m.is_allergy ? (
+                        <div>
+                          <li> >> </li>
+                        </div>
+                      ) : (
+                        <li>null</li>
+                      )}
+                    </div>
+                  ))}
+                </div>
                 <p>Risk and Safety Codes: </p>
-                <li> >></li>
+                <div>
+                  {healthProfile.map((h, index) => (
+                    <div>
+                      {h.is_risk_and_safety_issue ? (
+                        <div>
+                          <li> >> {h.name}</li>
+                        </div>
+                      ) : (
+                        <li>null</li>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </TabPane>
               <TabPane eventKey="third">
                 <p>

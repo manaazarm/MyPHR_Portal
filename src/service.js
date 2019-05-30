@@ -59,6 +59,7 @@ function newLogin(username, password) {
         // to keep user logged in between page refreshes
         localStorage.setItem("yy", JSON.stringify(user));
         console.log(localStorage.getItem("yy"));
+        //store client_id and token locally
       }
       return user;
     });
@@ -99,7 +100,28 @@ function getCaregivers(id) {
 function getComment() {}
 function getDietaryRegimen() {}
 function getEpisodes() {}
-function getHealthProfile() {}
+
+//response to real api
+function getHealthProfile(client_id, token) {
+  localStorage.removeItem("healthProfile");
+
+  return fetch(
+    `http://localhost:5000/health_profile?client_id=${client_id}&token=${token}`
+  )
+    .then(handleResponse)
+    .then(healthProfile => {
+      // login successful if there's a user in the response
+      if (healthProfile) {
+        // store user details and basic auth credentials in local storage
+        // to keep user logged in between page refreshes
+        localStorage.setItem("healthProfile", JSON.stringify(healthProfile));
+        console.log(
+          "health profile information:" + localStorage.getItem("healthProfile")
+        );
+      }
+      return healthProfile;
+    });
+}
 function getPhysicians() {}
 function getPhoneNumber() {}
 
