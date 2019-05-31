@@ -7,6 +7,7 @@ import { userService } from "./service";
 import Profile from "./profile";
 import Episodes from "./episodes";
 import Alerts from "./alerts";
+import photo from "./photo.png";
 import {
   Route,
   NavLink,
@@ -19,21 +20,22 @@ class Home extends Component {
     super(props);
 
     this.state = {
-      user: {},
-      users: []
+      client: {}
     };
   }
   componentDidMount() {
     this.setState({
-      user: JSON.parse(localStorage.getItem("yy"))
+      //client: JSON.parse(localStorage.getItem("client"))
     });
-    // userService.getAll().then(users => this.setState({ users }));
-    console.log("sssss" + localStorage.getItem("yy"));
+    userService
+      .getClient(JSON.parse(localStorage.getItem("oneUser")).client_id)
+      .then(data => this.setState({ client: JSON.parse(data) }));
+
+    console.log("sssss" + localStorage.getItem("client"));
   }
 
   render() {
-    const { user } = this.state;
-    console.log("hahah:" + user.client_id);
+    const { client } = this.state;
     return (
       <Router>
         <div className="App">
@@ -41,10 +43,11 @@ class Home extends Component {
           <body>
             <div class="row">
               <div class="column1">
-                {user.photo}
-                <img src={user.photo} alt="Photo" />
+                <img src={photo} alt="Photo" />
 
-                <h3>{user.name}</h3>
+                <h3>
+                  {client.firstname} {client.surname}
+                </h3>
 
                 <div class="editor">
                   <a href="#news">Edit Primary Information</a>
@@ -93,11 +96,13 @@ class Home extends Component {
                   <Route
                     exact
                     path="/"
-                    render={props => <App {...props} user={user.name} />}
+                    render={props => <App {...props} user={client.client_id} />}
                   />
                   <Route
                     path="/profile"
-                    render={props => <Profile {...props} user={user.name} />}
+                    render={props => (
+                      <Profile {...props} user={client.client_id} />
+                    )}
                   />
                   <Route path="/episodes" component={Episodes} />
                   <Route path="/alerts" component={Alerts} />

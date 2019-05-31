@@ -14,13 +14,15 @@ class Profile extends React.Component {
       c: {},
       caregiver: {},
       isLoading: true,
-      healthProfile: []
+      healthProfile: [],
+      client: {}
     };
   }
 
   componentDidMount() {
     this.setState({
-      user: JSON.parse(localStorage.getItem("yy"))
+      user: JSON.parse(localStorage.getItem("oneUser")),
+      client: JSON.parse(localStorage.getItem("client"))
     });
 
     //mock api calls
@@ -29,17 +31,16 @@ class Profile extends React.Component {
       .getAddress(JSON.parse(localStorage.getItem("user")).id)
       .then(data => this.setState({ address: JSON.parse(data) }));
      
-
+*/
     userService
-      .getCaregivers(JSON.parse(localStorage.getItem("user")).id)
+      .getCaregivers(JSON.parse(localStorage.getItem("oneUser")).client_id)
       .then(data => this.setState({ c: JSON.parse(data) }));
-     */
 
     //real api calls
     userService
       .getHealthProfile(
-        JSON.parse(localStorage.getItem("yy")).client_id,
-        JSON.parse(localStorage.getItem("yy")).token
+        JSON.parse(localStorage.getItem("oneUser")).client_id,
+        JSON.parse(localStorage.getItem("oneUser")).token
       )
       .then(data => this.setState({ healthProfile: data }));
 
@@ -48,12 +49,12 @@ class Profile extends React.Component {
     console.log("fff" + localStorage.getItem("caregiver"));
 
     //user from real api
-    console.log("yy:" + localStorage.getItem("yy"));
+    console.log("oneUser:" + localStorage.getItem("oneUser"));
+    console.log(localStorage.getItem("client"));
   }
 
   render() {
-    const { user, address, c, healthProfile } = this.state;
-    console.log("test c:" + healthProfile);
+    const { user, client, address, c, healthProfile } = this.state;
 
     return (
       <TabContainer id="left-tabs-example" defaultActiveKey="first">
@@ -130,10 +131,12 @@ class Profile extends React.Component {
           <Col sm={9}>
             <TabContent class="tab-content">
               <TabPane eventKey="first">
-                <p>{user.name}</p>
-                <p>Date of Birth: {user.dob}</p>
-                <p>Gender: {user.gender}</p>
-                <p>Service Language: {user.language}</p>
+                <p>
+                  {client.firstname} {client.surname}
+                </p>
+                <p>Date of Birth: {client.dob}</p>
+                <p>Gender: {client.gender}</p>
+                <p>Service Language: {client.service_language}</p>
                 <p>Last Access: </p>
               </TabPane>
               <TabPane eventKey="second">
@@ -188,22 +191,37 @@ class Profile extends React.Component {
                 <p>Email: {address.email}</p>
               </TabPane>
               <TabPane eventKey="fourth">
-                <p>Primary Contact: </p>
-                <li> Name: {c.name}</li>
-                <li> Relationship: {c.relationship}</li>
-                <li> Home Address: {c.homeAddress}</li>
-                <li> Mailing Address: {c.mailingAddress}</li>
-                <li> Cell Phone: {c.cellPhone}</li>
-                <li> Home Phone: {c.homePhone}</li>
-                <li> Email: {c.email}</li>
-                <p>Second Contact: </p>
-                <li> Name: </li>
-                <li> Relationship: </li>
-                <li> Home Address: </li>
-                <li> Mailing Address: </li>
-                <li> Cell Phone: </li>
-                <li> Home Phone: </li>
-                <li> Email: </li>
+                <div>
+                  {c.is_primary_caregiver ? (
+                    <div>
+                      <p>Primary Contact: </p>
+                      <li>
+                        {" "}
+                        Name: {c.firstname} {c.surname}
+                      </li>
+                      <li> Relationship: {c.relationship}</li>
+                      <li> Home Address: {c.homeAddress}</li>
+                      <li> Mailing Address: {c.mailingAddress}</li>
+                      <li> Cell Phone: {c.cellPhone}</li>
+                      <li> Home Phone: {c.homePhone}</li>
+                      <li> Email: {c.email}</li>
+                    </div>
+                  ) : (
+                    <div>
+                      <p>Second Contact: </p>
+                      <li>
+                        {" "}
+                        Name: {c.firstname} {c.surname}
+                      </li>
+                      <li> Relationship:{c.relationship} </li>
+                      <li> Home Address: </li>
+                      <li> Mailing Address: </li>
+                      <li> Cell Phone: </li>
+                      <li> Home Phone: </li>
+                      <li> Email: </li>
+                    </div>
+                  )}
+                </div>
               </TabPane>
               <TabPane eventKey="fifth">
                 <p>Family Physicians: </p>

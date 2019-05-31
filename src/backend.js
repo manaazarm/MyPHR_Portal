@@ -103,7 +103,7 @@ export function configureBackend() {
 }
 export function authHeader() {
   // return authorization header with basic auth credentials
-  let user = JSON.parse(localStorage.getItem("yy"));
+  let user = JSON.parse(localStorage.getItem("oneUser"));
 
   if (user && user.authdata) {
     return { Authorization: "Basic " + user.authdata };

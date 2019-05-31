@@ -1,11 +1,11 @@
 import config from "config";
 import { authHeader } from "./backend";
 
-import { Client } from "./models/client.py";
 export const userService = {
   login,
   newLogin,
   logout,
+  getClient,
   getAll,
   getAddress,
   getCaregivers,
@@ -17,6 +17,7 @@ export const userService = {
   getPhoneNumber
 };
 
+//for fake api, responsing to backend.js
 function login(username, password) {
   const requestOptions = {
     method: "POST",
@@ -38,10 +39,13 @@ function login(username, password) {
     });
 }
 
-//fetch from real api
+/**
+ * fetch from real api
+ */
+
 function newLogin(username, password) {
   //each time fresh local storage
-  localStorage.removeItem("yy");
+  localStorage.removeItem("oneUser");
   const requestOptions = {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -57,12 +61,28 @@ function newLogin(username, password) {
       if (user) {
         // store user details and basic auth credentials in local storage
         // to keep user logged in between page refreshes
-        localStorage.setItem("yy", JSON.stringify(user));
-        console.log(localStorage.getItem("yy"));
+        localStorage.setItem("oneUser", JSON.stringify(user));
+        console.log(localStorage.getItem("oneUser"));
         //store client_id and token locally
       }
       return user;
     });
+}
+function getClient(client_id) {
+  localStorage.removeItem("client");
+  return (
+    fetch(`https://5cdc6232069eb30014202d8e.mockapi.io/profile/${client_id}`) //must have a place to put userId
+      // We get the API response and receive data in JSON format...
+      .then(response => response.json())
+      // ...then we update the users state
+      .then(client => {
+        localStorage.setItem("client", JSON.stringify(client));
+        console.log("llll:" + localStorage.getItem("client"));
+        const cli = localStorage.getItem("client");
+
+        return cli;
+      })
+  );
 }
 function getAddress(id) {
   return (
@@ -81,9 +101,11 @@ function getAddress(id) {
 }
 //https://5cdc6232069eb30014202d8e.mockapi.io/addresses/${id}
 
-function getCaregivers(id) {
+//how about two or more caregivers, is the client_id patient id?
+function getCaregivers(client_id) {
+  localStorage.removeItem("caregiver");
   return (
-    fetch(`https://5cdc6232069eb30014202d8e.mockapi.io/caregivers/${id}`) //must have a place to put userId
+    fetch(`https://5cdc6232069eb30014202d8e.mockapi.io/caregivers/${client_id}`) //must have a place to put userId
       // We get the API response and receive data in JSON format...
       .then(response => response.json())
       // ...then we update the users state
@@ -126,7 +148,7 @@ function getPhysicians() {}
 function getPhoneNumber() {}
 
 function logout() {
-  localStorage.removeItem("user");
+  localStorage.removeItem("oneUser");
   //localStorage.removeItem("address");
 }
 
