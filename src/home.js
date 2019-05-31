@@ -3,11 +3,11 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import "./App.css";
+import { userService } from "./service";
 import Profile from "./profile";
 import Episodes from "./episodes";
 import Alerts from "./alerts";
 import photo from "./photo.png";
-import { PropsRoute, PublicRoute, PrivateRoute } from "react-router-with-props";
 import {
   Route,
   NavLink,
@@ -16,10 +16,26 @@ import {
 } from "react-router-dom";
 
 class Home extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      client: {}
+    };
+  }
+  componentDidMount() {
+    this.setState({
+      //client: JSON.parse(localStorage.getItem("client"))
+    });
+    userService
+      .getClient(JSON.parse(localStorage.getItem("oneUser")).client_id)
+      .then(data => this.setState({ client: JSON.parse(data) }));
+
+    console.log("sssss" + localStorage.getItem("client"));
+  }
+
   render() {
-    console.log(this.props);
-    let userName = this.props.user;
-    console.log("test name:" + userName);
+    const { client } = this.state;
     return (
       <Router>
         <div className="App">
@@ -29,7 +45,9 @@ class Home extends Component {
               <div class="column1">
                 <img src={photo} alt="Photo" />
 
-                <h3>{this.props.user}</h3>
+                <h3>
+                  {client.firstname} {client.surname}
+                </h3>
 
                 <div class="editor">
                   <a href="#news">Edit Primary Information</a>
@@ -42,7 +60,7 @@ class Home extends Component {
               <div class="column2">
                 <nav class="topnav">
                   <NavLink
-                    to="/dashboard"
+                    to="/"
                     className="nav-style"
                     activeClassName="selectedLink"
                   >
@@ -75,11 +93,15 @@ class Home extends Component {
                 </nav>
 
                 <div class="main-place">
-                  <Route exact path="/dashboard" component={App} />
+                  <Route
+                    exact
+                    path="/"
+                    render={props => <App {...props} user={client.client_id} />}
+                  />
                   <Route
                     path="/profile"
                     render={props => (
-                      <Profile {...props} user={this.props.user} />
+                      <Profile {...props} user={client.client_id} />
                     )}
                   />
                   <Route path="/episodes" component={Episodes} />

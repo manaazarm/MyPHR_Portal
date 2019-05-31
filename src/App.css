@@ -172,12 +172,19 @@ ul {
   }
 }
 /**login in page**/
+.loginPage {
+  text-align: center;
+  margin-top: 250px;
+}
 form {
+  /**
   margin: 300px 600px 100px 500px;
+  
   border: 1px solid black;
+  **/
+  display: inline-block;
 }
 input[type="submit"] {
   margin-left: 140px;
   text-align: center;
-  background-color: tomato;
 }

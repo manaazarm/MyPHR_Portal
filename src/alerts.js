@@ -4,9 +4,7 @@ import "./App.css";
 class Alerts extends React.Component {
   constructor(props, context) {
     super(props, context);
-    this.state = {
-      key: "home"
-    };
+    this.state = {};
   }
 
   render() {

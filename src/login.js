@@ -1,103 +1,115 @@
 import React from "react";
 import "./App.css";
-import ReactDOM from "react-dom";
-import Home from "./home";
-import App from "./App";
-
-const Welcome = ({ user, onSignOut }) => {
-  // This is a dumb "stateless" component
-  return (
-    <div>
-      Welcome <strong>{user.username}</strong>!
-      <a href="javascript:;" onClick={onSignOut}>
-        Sign out
-      </a>
-    </div>
-  );
-};
+import { userService } from "./service";
 
 class LoginForm extends React.Component {
   // Using a class based component here because we're accessing DOM refs
-
-  handleSignIn(e) {
-    e.preventDefault();
-    let username = this.refs.username.value;
-    let password = this.refs.password.value;
-    this.props.onSignIn(username, password);
-  }
-
-  render() {
-    return (
-      <form onSubmit={this.handleSignIn.bind(this)}>
-        <h3 style={{ textAlign: "center" }}>Sign in</h3>
-        <p>
-          Username:{" "}
-          <input type="text" ref="username" placeholder="enter you username" />
-        </p>
-        <p>
-          Password:{" "}
-          <input type="password" ref="password" placeholder="enter password" />
-        </p>
-        <p style={{ textAlign: "center" }}>
-          <button disabled>Send Authentication Code</button>
-        </p>
-        <p style={{ textAlign: "center" }}>
-          <button disabled>Answer Security Questions</button>
-        </p>
-        <p style={{ textDecoration: "underline" }}>
-          Forgot your username or password?
-        </p>
-        <input style={{ textAlign: "center" }} type="submit" value="Login" />
-        <p style={{ textAlign: "center", textDecoration: "underline" }}>
-          Sign Up
-        </p>
-      </form>
-    );
-  }
-}
-
-class Login extends React.Component {
   constructor(props) {
     super(props);
-    // the initial application state
+    userService.logout();
     this.state = {
-      user: null
+      username: "",
+      password: "",
+      submitted: false,
+      loading: false,
+      error: ""
     };
+    this.handleSignIn = this.handleSignIn.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
-
-  // App "actions" (functions that modify state)
-  signIn(username, password) {
-    // This is where you would call Firebase, an API etc...
-    // calling setState will re-render the entire app (efficiently!)
-
-    this.setState({
-      user: {
-        username,
-        password
-      }
-    });
+  handleChange(e) {
+    const { name, value } = e.target;
+    this.setState({ [name]: value });
   }
-  signOut() {
-    // clear out user from state
-    this.setState({ user: null });
+  handleSignIn(e) {
+    e.preventDefault();
+    this.setState({ submitted: true });
+    const { username, password, returnUrl } = this.state;
+
+    // stop here if form is invalid
+    if (!(username && password)) {
+      return;
+    }
+
+    //this.setState({ loading: true });
+
+    userService.newLogin(username, password).then(
+      user => {
+        const { from } = this.props.location.state || {
+          from: { pathname: "/" }
+        };
+        this.props.history.push(from);
+      },
+      error => this.setState({ error, loading: false })
+    );
+    this.props.history.push("/");
   }
 
   render() {
-    // Here we pass relevant state to our child components
-    // as props. Note that functions are passed using `bind` to
-    // make sure we keep our scope to App
+    const { username, password, submitted, loading, error } = this.state;
     return (
-      <div>
-        {this.state.user ? (
-          <Home user={this.state.user.username} />
-        ) : (
-          <LoginForm onSignIn={this.signIn.bind(this)} />
-        )}
+      <div className="loginPage">
+        <form onSubmit={this.handleSignIn}>
+          <h3 style={{ textAlign: "center" }}>Sign in</h3>
+          <div
+            className={
+              "form-group" + (submitted && !username ? " has-error" : "")
+            }
+          >
+            <label htmlFor="username">Username</label>
+            <input
+              type="text"
+              className="form-control"
+              name="username"
+              value={username}
+              onChange={this.handleChange}
+            />
+            {submitted && !username && (
+              <div className="help-block">Username is required</div>
+            )}
+          </div>
+          <div
+            className={
+              "form-group" + (submitted && !password ? " has-error" : "")
+            }
+          >
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              className="form-control"
+              name="password"
+              value={password}
+              onChange={this.handleChange}
+            />
+            {submitted && !password && (
+              <div className="help-block">Password is required</div>
+            )}
+          </div>
+          <p style={{ textAlign: "center" }}>
+            <button disabled>Send Authentication Code</button>
+          </p>
+          <p style={{ textAlign: "center" }}>
+            <button disabled>Answer Security Questions</button>
+          </p>
+          <p style={{ textDecoration: "underline" }}>
+            Forgot your username or password?
+          </p>
+          <div className="form-group">
+            <button className="btn btn-primary" disabled={loading}>
+              Login
+            </button>
+            {loading && (
+              <img src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+            )}
+          </div>
+          <p style={{ textAlign: "center", textDecoration: "underline" }}>
+            Sign Up
+          </p>
+          {error && <div className={"alert alert-danger"}>{error}</div>}
+        </form>
       </div>
     );
   }
 }
 
-ReactDOM.render(Login, document.getElementById("root"));
-
-export default Login;
+export default LoginForm;
