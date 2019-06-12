@@ -20,7 +20,8 @@ class Home extends Component {
     super(props);
 
     this.state = {
-      client: {}
+      client: {},
+      basicInfo: {}
     };
   }
   componentDidMount() {
@@ -32,10 +33,18 @@ class Home extends Component {
       .then(data => this.setState({ client: JSON.parse(data) }));
 
     console.log("sssss" + localStorage.getItem("client"));
+
+    userService
+      .getBasicInfo(
+        JSON.parse(localStorage.getItem("oneUser")).client_id,
+        JSON.parse(localStorage.getItem("oneUser")).user_id,
+        JSON.parse(localStorage.getItem("oneUser")).token
+      )
+      .then(data => this.setState({ basicInfo: data }));
   }
 
   render() {
-    const { client } = this.state;
+    const { client, basicInfo } = this.state;
     return (
       <Router>
         <div className="App">
@@ -46,7 +55,7 @@ class Home extends Component {
                 <img src={photo} alt="Photo" />
 
                 <h3>
-                  {client.firstname} {client.surname}
+                  {basicInfo.firstname} {basicInfo.surname}
                 </h3>
 
                 <div class="editor">
