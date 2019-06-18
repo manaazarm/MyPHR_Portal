@@ -16,8 +16,7 @@ export const userService = {
   getDietaryRegimen,
   getEpisodes,
   getHealthProfile, //real
-  getPhysician, //real
-  getPhoneNumber
+  getPhysician //real
 };
 
 //for fake api, responsing to backend.js
@@ -125,7 +124,6 @@ function getCaregivers(client_id) {
 
 function getComment() {}
 function getDietaryRegimen() {}
-function getEpisodes() {}
 
 //response to real api
 function getHealthProfile(client_id, token) {
@@ -202,7 +200,7 @@ function getCaregiver(client_id, token, is_active) {
 function getPhysician(client_id, token) {
   localStorage.removeItem("physician");
   return fetch(
-    `http://localhost:5000/caregiver?client_id=${client_id}&token=${token}`
+    `http://localhost:5000/physician?client_id=${client_id}&token=${token}`
   )
     .then(handleResponse)
     .then(physician => {
@@ -216,7 +214,23 @@ function getPhysician(client_id, token) {
       return physician;
     });
 }
-function getPhoneNumber() {}
+function getEpisodes(client_id, token, is_active) {
+  localStorage.removeItem("episodes");
+  return fetch(
+    `http://localhost:5000/episodes?client_id=${client_id}&token=${token}&is_active=${is_active}`
+  )
+    .then(handleResponse)
+    .then(episodes => {
+      // login successful if there's a user in the response
+      if (episodes) {
+        // store user details and basic auth credentials in local storage
+        // to keep user logged in between page refreshes
+        localStorage.setItem("episodes", JSON.stringify(episodes));
+        console.log("episodes:" + localStorage.getItem("episodes"));
+      }
+      return episodes;
+    });
+}
 
 function logout() {
   localStorage.removeItem("oneUser");

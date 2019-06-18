@@ -17,7 +17,10 @@ class Profile extends React.Component {
       healthProfile: [],
       client: {},
       basicInfo: {},
-      contactInfo: []
+      addressInfo: [],
+      physician: {},
+      phoneInfo: [],
+      emailInfo: []
     };
   }
 
@@ -38,7 +41,10 @@ class Profile extends React.Component {
       .getCaregivers(JSON.parse(localStorage.getItem("oneUser")).client_id)
       .then(data => this.setState({ c: JSON.parse(data) }));
 
-    //real api calls
+    /***
+     * real api calls
+     * contactInfo JSON format has error when printing
+     */
     userService
       .getHealthProfile(
         JSON.parse(localStorage.getItem("oneUser")).client_id,
@@ -52,7 +58,13 @@ class Profile extends React.Component {
         1,
         JSON.parse(localStorage.getItem("oneUser")).token
       )
-      .then(data => this.setState({ contactInfo: data }));
+      .then(data =>
+        this.setState({
+          addressInfo: data[0][1],
+          phoneInfo: data[1][1],
+          emailInfo: data[2][1]
+        })
+      );
 
     userService
       .getCaregiver(
@@ -62,22 +74,37 @@ class Profile extends React.Component {
       )
       .then(data => this.setState({ caregiver: data }));
 
+    userService
+      .getPhysician(
+        JSON.parse(localStorage.getItem("oneUser")).client_id,
+        JSON.parse(localStorage.getItem("oneUser")).token,
+        1
+      )
+      .then(data =>
+        this.setState({
+          physician: data["23230b0b-3c94-41f9-ac76-a5e5506b6f90"]["dr"]
+        })
+      );
+
     //user from real api
     console.log("oneUser:" + localStorage.getItem("oneUser"));
     console.log("basic info:" + localStorage.getItem("basicInfo"));
+    console.log("ppp:" + localStorage.getItem("physician"));
   }
 
   render() {
     const {
-      user,
       basicInfo,
-      contactInfo,
-      address,
-      c,
+      addressInfo,
+      phoneInfo,
+      emailInfo,
       caregiver,
-      healthProfile
+      healthProfile,
+      physician
     } = this.state;
-    //console.log("contact info is:" + contactInfo[0]);
+
+    console.log("physician is:" + JSON.stringify(physician));
+
     return (
       <TabContainer id="left-tabs-example" defaultActiveKey="first">
         <Row>
@@ -165,17 +192,31 @@ class Profile extends React.Component {
                 <p>Dietary Regimen: {basicInfo.dietary_regimen}</p>
                 <p>Advance Directives: {basicInfo.advance_directives}</p>
                 <p>Active Diagnosis: </p>
-                <li> >></li>
-                <li> diagnosed on: </li>
-                <li> diagnosed by: </li>
-                <p>Allergies: </p>
+                <div>
+                  {healthProfile.map((m, index) => (
+                    <div>
+                      {m.diagnosing_healthcare_provider_id == "" ? (
+                        <div>
+                          <li> null</li>
+                        </div>
+                      ) : (
+                        <div>
+                          <li> >></li>
+                          <li> diagnosed on: </li>
+                          <li> diagnosed by: </li>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
 
+                <p>Allergies: </p>
                 <div>
                   {healthProfile.map((m, index) => (
                     <div>
                       {m.is_allergy ? (
                         <div>
-                          <li> >> </li>
+                          <li> </li>
                         </div>
                       ) : (
                         <li>null</li>
@@ -189,7 +230,7 @@ class Profile extends React.Component {
                     <div>
                       {h.is_risk_and_safety_issue ? (
                         <div>
-                          <li> >> {h.name}</li>
+                          <li> {h.name}</li>
                         </div>
                       ) : (
                         <li>null</li>
@@ -200,17 +241,25 @@ class Profile extends React.Component {
               </TabPane>
               <TabPane eventKey="third">
                 <p>
-                  Home Address: {address.street_number}, {address.city},{" "}
-                  {address.country}, {address.postal_code}
+                  Home Address:{" "}
+                  {addressInfo.map(a => (
+                    <div>
+                      {a.unit_number} {a.street_name} {a.street_type}, {a.city},{" "}
+                      {a.country}, {a.postal_code}{" "}
+                    </div>
+                  ))}
                 </p>
+                <div />
+                <p>Mailing Address: </p>
+                <p>Other Address: </p>
                 <p>
-                  Mailing Address:{address.street_number}, {address.city},{" "}
-                  {address.country}, {address.postal_code}
+                  Cell Phone:{" "}
+                  {phoneInfo.map(p => (
+                    <div>{p.number}</div>
+                  ))}
                 </p>
-                <p>Other Address: null</p>
-                <p>Cell Phone: {address.cell_phone}</p>
-                <p>Home Phone: {address.home_phone}</p>
-                <p>Email: {address.email}</p>
+                <p>Home Phone: </p>
+                <p>Email: {emailInfo}</p>
               </TabPane>
               <TabPane eventKey="fourth">
                 <div>
@@ -250,14 +299,31 @@ class Profile extends React.Component {
                 </div>
               </TabPane>
               <TabPane eventKey="fifth">
-                <p>Family Physicians: </p>
-                <li> Name: </li>
-                <li> Address: </li>
-                <li> Phone: </li>
-                <p>Neurologist: </p>
-                <li> Name: </li>
-                <li> Address: </li>
-                <li> Phone: </li>
+                <div>
+                  {physician.specialty == "Family Medicine" ? (
+                    <div>
+                      <p>Family Physicians: </p>
+                      <li> Name: {physician.name}</li>
+                      <li> Address: </li>
+                      <li> Phone: </li>
+                      <p>Neurologist: </p>
+                      <li> Name: </li>
+                      <li> Address: </li>
+                      <li> Phone: </li>
+                    </div>
+                  ) : (
+                    <div>
+                      <p>Family Physicians: </p>
+                      <li> Name: </li>
+                      <li> Address: </li>
+                      <li> Phone: </li>
+                      <p>Neurologist: </p>
+                      <li> Name: </li>
+                      <li> Address: </li>
+                      <li> Phone: </li>
+                    </div>
+                  )}
+                </div>
               </TabPane>
             </TabContent>
           </Col>
