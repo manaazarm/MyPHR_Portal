@@ -258,7 +258,7 @@ class Profile extends React.Component {
                   {healthProfile.map((h, index) => (
                     <div>
                       {h.is_risk_and_safety_issue ? (
-                        <div>{h.name}</div>
+                        <div> >>{h.name}</div>
                       ) : (
                         <div />
                       )}
@@ -268,11 +268,11 @@ class Profile extends React.Component {
               </TabPane>
               <TabPane eventKey="third">
                 <p>
-                  <strong>Home Address:</strong>{" "}
                   {addressInfo.map(a => (
                     <div>
-                      {a.unit_number} {a.street_name} {a.street_type}, {a.city},{" "}
-                      {a.country}, {a.postal_code}{" "}
+                      <strong>Home Address:</strong> {a.unit_number}{" "}
+                      {a.street_name} {a.street_type}, {a.city}, {a.country},{" "}
+                      {a.postal_code}{" "}
                     </div>
                   ))}
                 </p>
@@ -284,9 +284,10 @@ class Profile extends React.Component {
                   <strong>Other Address:</strong>{" "}
                 </p>
                 <p>
-                  <strong>Cell Phone:</strong>{" "}
                   {phoneInfo.map(p => (
-                    <div>{p.number}</div>
+                    <div>
+                      <strong>Cell Phone:</strong> {p.number}
+                    </div>
                   ))}
                 </p>
                 <p>
