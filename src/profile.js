@@ -82,7 +82,7 @@ class Profile extends React.Component {
       )
       .then(data =>
         this.setState({
-          physician: data["23230b0b-3c94-41f9-ac76-a5e5506b6f90"]["dr"]
+          physician: data[Object.keys(data)[0]]["dr"]
         })
       );
 
@@ -181,24 +181,49 @@ class Profile extends React.Component {
             <TabContent class="tab-content">
               <TabPane eventKey="first">
                 <p>
-                  {basicInfo.firstname} {basicInfo.surname}
+                  {" "}
+                  <strong>
+                    {basicInfo.firstname} {basicInfo.surname}
+                  </strong>
                 </p>
-                <p>Date of Birth: {basicInfo.dob}</p>
-                <p>Gender: {basicInfo.gender}</p>
-                <p>Service Language: {basicInfo.service_language}</p>
-                <p>Last Access: {basicInfo.last_access_date}</p>
+                <p>
+                  <strong>Date of Birth:</strong> {basicInfo.dob}
+                </p>
+                <p>
+                  {" "}
+                  <strong>Gender: </strong>
+                  {basicInfo.gender}
+                </p>
+                <p>
+                  {" "}
+                  <strong>Service Language: </strong>{" "}
+                  {basicInfo.service_language}
+                </p>
+                <p>
+                  {" "}
+                  <strong>Last Access:</strong>
+                  {basicInfo.last_access_date}
+                </p>
               </TabPane>
               <TabPane eventKey="second">
-                <p>Dietary Regimen: {basicInfo.dietary_regimen}</p>
-                <p>Advance Directives: {basicInfo.advance_directives}</p>
-                <p>Active Diagnosis: </p>
+                <p>
+                  {" "}
+                  <strong>Dietary Regimen: </strong>
+                  {basicInfo.dietary_regimen}
+                </p>
+                <p>
+                  {" "}
+                  <strong>Advance Directives:</strong>{" "}
+                  {basicInfo.advance_directives}
+                </p>
+                <p>
+                  <strong>Active Diagnosis: </strong>
+                </p>
                 <div>
                   {healthProfile.map((m, index) => (
                     <div>
                       {m.diagnosing_healthcare_provider_id == "" ? (
-                        <div>
-                          <li> null</li>
-                        </div>
+                        <div />
                       ) : (
                         <div>
                           <li> >></li>
@@ -210,7 +235,9 @@ class Profile extends React.Component {
                   ))}
                 </div>
 
-                <p>Allergies: </p>
+                <p>
+                  <strong>Allergies: </strong>
+                </p>
                 <div>
                   {healthProfile.map((m, index) => (
                     <div>
@@ -219,21 +246,21 @@ class Profile extends React.Component {
                           <li> </li>
                         </div>
                       ) : (
-                        <li>null</li>
+                        <div />
                       )}
                     </div>
                   ))}
                 </div>
-                <p>Risk and Safety Codes: </p>
+                <p>
+                  <strong>Risk and Safety Codes: </strong>
+                </p>
                 <div>
                   {healthProfile.map((h, index) => (
                     <div>
                       {h.is_risk_and_safety_issue ? (
-                        <div>
-                          <li> {h.name}</li>
-                        </div>
+                        <div>{h.name}</div>
                       ) : (
-                        <li>null</li>
+                        <div />
                       )}
                     </div>
                   ))}
@@ -241,7 +268,7 @@ class Profile extends React.Component {
               </TabPane>
               <TabPane eventKey="third">
                 <p>
-                  Home Address:{" "}
+                  <strong>Home Address:</strong>{" "}
                   {addressInfo.map(a => (
                     <div>
                       {a.unit_number} {a.street_name} {a.street_type}, {a.city},{" "}
@@ -250,16 +277,25 @@ class Profile extends React.Component {
                   ))}
                 </p>
                 <div />
-                <p>Mailing Address: </p>
-                <p>Other Address: </p>
                 <p>
-                  Cell Phone:{" "}
+                  <strong>Mailing Address:</strong>
+                </p>
+                <p>
+                  <strong>Other Address:</strong>{" "}
+                </p>
+                <p>
+                  <strong>Cell Phone:</strong>{" "}
                   {phoneInfo.map(p => (
                     <div>{p.number}</div>
                   ))}
                 </p>
-                <p>Home Phone: </p>
-                <p>Email: {emailInfo}</p>
+                <p>
+                  <strong>Home Phone: </strong>
+                </p>
+                <p>
+                  <strong>Email: </strong>
+                  {emailInfo}
+                </p>
               </TabPane>
               <TabPane eventKey="fourth">
                 <div>
@@ -267,31 +303,63 @@ class Profile extends React.Component {
                     <div>
                       {careg.is_primary_caregiver ? (
                         <div>
-                          <p>Primary Contact: </p>
-                          <li>
-                            {" "}
-                            Name: {careg.firstname} {careg.surname}
-                          </li>
-                          <li> Relationship: {careg.relationship}</li>
-                          <li> Home Address: </li>
-                          <li> Mailing Address: </li>
-                          <li> Cell Phone: </li>
-                          <li> Home Phone: </li>
-                          <li> Email: </li>
+                          <p>
+                            <strong>Primary Contact:</strong>{" "}
+                          </p>
+                          <ul>
+                            <li>
+                              <strong>Name: </strong>
+                              {careg.firstname} {careg.surname}
+                            </li>
+                            <li>
+                              <strong> Relationship:</strong>{" "}
+                              {careg.relationship}
+                            </li>
+                            <li>
+                              <strong> Home Address:</strong>{" "}
+                            </li>
+                            <li>
+                              <strong> Mailing Address:</strong>{" "}
+                            </li>
+                            <li>
+                              <strong> Cell Phone:</strong>{" "}
+                            </li>
+                            <li>
+                              <strong> Home Phone:</strong>{" "}
+                            </li>
+                            <strong> Email:</strong>{" "}
+                          </ul>
                         </div>
                       ) : (
                         <div>
-                          <p>Second Contact: </p>
-                          <li>
-                            {" "}
-                            Name: {careg.firstname} {careg.surname}
-                          </li>
-                          <li> Relationship:{careg.relationship} </li>
-                          <li> Home Address: </li>
-                          <li> Mailing Address: </li>
-                          <li> Cell Phone: </li>
-                          <li> Home Phone: </li>
-                          <li> Email: </li>
+                          <p>
+                            <strong>Second Contact:</strong>{" "}
+                          </p>
+                          <ul>
+                            <li>
+                              {" "}
+                              Name: {careg.firstname} {careg.surname}
+                            </li>
+                            <li>
+                              <strong> Relationship:</strong>{" "}
+                              {careg.relationship}{" "}
+                            </li>
+                            <li>
+                              <strong> Home Address:</strong>{" "}
+                            </li>
+                            <li>
+                              <strong> Mailing Address:</strong>{" "}
+                            </li>
+                            <li>
+                              <strong> Cell Phone:</strong>{" "}
+                            </li>
+                            <li>
+                              <strong> Home Phone:</strong>{" "}
+                            </li>
+                            <li>
+                              <strong> Email:</strong>{" "}
+                            </li>
+                          </ul>
                         </div>
                       )}
                     </div>
@@ -302,25 +370,53 @@ class Profile extends React.Component {
                 <div>
                   {physician.specialty == "Family Medicine" ? (
                     <div>
-                      <p>Family Physicians: </p>
-                      <li> Name: {physician.name}</li>
-                      <li> Address: </li>
-                      <li> Phone: </li>
-                      <p>Neurologist: </p>
-                      <li> Name: </li>
-                      <li> Address: </li>
-                      <li> Phone: </li>
+                      <p>
+                        <strong>Family Physicians:</strong>{" "}
+                      </p>
+                      <ul>
+                        <li>
+                          <strong> Name:</strong> {physician.name}
+                        </li>
+                        <li>
+                          <strong> Address:</strong>{" "}
+                        </li>
+                        <li>
+                          <strong> Phone:</strong>{" "}
+                        </li>
+                      </ul>
+                      <p />
+                      <p>
+                        <strong>Neurologist:</strong>{" "}
+                      </p>
+                      <ul>
+                        <li>
+                          <strong> Name:</strong>{" "}
+                        </li>
+                        <li>
+                          <strong> Address:</strong>{" "}
+                        </li>
+                        <li>
+                          <strong> Phone:</strong>{" "}
+                        </li>
+                      </ul>
                     </div>
                   ) : (
                     <div>
-                      <p>Family Physicians: </p>
-                      <li> Name: </li>
-                      <li> Address: </li>
-                      <li> Phone: </li>
+                      <p>
+                        <strong>Family Physicians:</strong>
+                      </p>
+                      <ul>
+                        <li> Name: </li>
+                        <li> Address: </li>
+                        <li> Phone: </li>
+                      </ul>
+                      <p />
                       <p>Neurologist: </p>
-                      <li> Name: </li>
-                      <li> Address: </li>
-                      <li> Phone: </li>
+                      <ul>
+                        <li> Name: </li>
+                        <li> Address: </li>
+                        <li> Phone: </li>
+                      </ul>
                     </div>
                   )}
                 </div>

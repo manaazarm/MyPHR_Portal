@@ -13,6 +13,9 @@ var Events = Scroll.Events;
 var scroll = Scroll.animateScroll;
 var scrollSpy = Scroll.scrollSpy;
 
+//the page loads slow 
+
+//Add loop for episodes
 class Episodes extends React.Component {
   constructor(props, context) {
     super(props, context);
@@ -29,15 +32,22 @@ class Episodes extends React.Component {
       episode_1: {},
       episode_2: {},
       episode_3: {},
-      episode_4: {}
+      episode_4: {},
+      episodes_test: {},
+      test: [],
+      t: [],
+      document_id: {}
     };
     this.scrollToTop = this.scrollToTop.bind(this);
+    this.iterateEpisodes = this.iterateEpisodes.bind(this);
   }
 
   componentDidMount() {
     this.setState({
       user: JSON.parse(localStorage.getItem("oneUser")),
-      basicInfo: JSON.parse(localStorage.getItem("basicInfo"))
+      basicInfo: JSON.parse(localStorage.getItem("basicInfo")),
+      t: [],
+      test: []
     });
 
     userService
@@ -48,21 +58,23 @@ class Episodes extends React.Component {
       )
       .then(data =>
         this.setState({
-          episode_1_dr: data["23230b0b-3c94-41f9-ac76-a5e5506b6f90"]["dr"],
-          episode_1_hic: data["23230b0b-3c94-41f9-ac76-a5e5506b6f90"]["hic"],
-          episode_1: data["23230b0b-3c94-41f9-ac76-a5e5506b6f90"]["episode"],
+          episodes_test: data,
 
-          episode_2_dr: data["2ff41f15-7249-4752-9cf7-cfa929b9a295"]["dr"],
-          episode_2_hic: data["2ff41f15-7249-4752-9cf7-cfa929b9a295"]["hic"],
-          episode_2: data["2ff41f15-7249-4752-9cf7-cfa929b9a295"]["episode"],
+          episode_1_dr: data[Object.keys(data)[0]]["dr"],
+          episode_1_hic: data[Object.keys(data)[0]]["hic"],
+          episode_1: data[Object.keys(data)[0]]["episode"],
 
-          episode_3_dr: data["8e1ddfea-d522-4d65-9d85-e20a664b5549"]["dr"],
-          episode_3_hic: data["8e1ddfea-d522-4d65-9d85-e20a664b5549"]["hic"],
-          episode_3: data["8e1ddfea-d522-4d65-9d85-e20a664b5549"]["episode"],
+          episode_2_dr: data[Object.keys(data)[1]]["dr"],
+          episode_2_hic: data[Object.keys(data)[1]]["hic"],
+          episode_2: data[Object.keys(data)[1]]["episode"],
 
-          episode_4_dr: data["99465268-49b5-4367-8d34-23032209002b"]["dr"],
-          episode_4_hic: data["99465268-49b5-4367-8d34-23032209002b"]["hic"],
-          episode_4: data["99465268-49b5-4367-8d34-23032209002b"]["episode"]
+          episode_3_dr: data[Object.keys(data)[2]]["dr"],
+          episode_3_hic: data[Object.keys(data)[2]]["hic"],
+          episode_3: data[Object.keys(data)[2]]["episode"],
+
+          episode_4_dr: data[Object.keys(data)[3]]["dr"],
+          episode_4_hic: data[Object.keys(data)[3]]["hic"],
+          episode_4: data[Object.keys(data)[3]]["episode"]
         })
       );
 
@@ -84,6 +96,64 @@ class Episodes extends React.Component {
     Events.scrollEvent.remove("end");
   }
 
+  iterateEpisodes() {
+    var episodes_test = JSON.stringify(this.state.episodes_test);
+    
+    for (let i = 0; i < 4; i++) {
+      //test[i] = Object.keys(episodes_test)[i];
+      //<Object.keys(episodes_test).length
+
+      return (
+        <VerticalTimelineElement
+          className="vertical-timeline-element--work"
+          date="October 2017"
+          iconStyle={{ background: "rgb(33, 150, 243)", color: "#fff" }}
+          position={"left"}
+        >
+          <h5 className="vertical-timeline-element-title">
+            {episodes_test[Object.keys(episodes_test)[i]["hic"]].name}
+          </h5>
+          <ul>
+            <div>
+              {episodes_test[Object.keys(episodes_test)[i]]["episode"]
+                .is_active ? (
+                <div>
+                  <li>
+                    {
+                      episodes_test[Object.keys(episodes_test)[i]]["episode"]
+                        .start_date
+                    }
+                  </li>
+                </div>
+              ) : (
+                <div>
+                  <li>
+                    {
+                      episodes_test[Object.keys(episodes_test)[i]]["episode"]
+                        .start_date
+                    }{" "}
+                    -{" "}
+                    {
+                      episodes_test[Object.keys(episodes_test)[i]]["episode"]
+                        .end_date
+                    }
+                  </li>
+                </div>
+              )}
+            </div>
+
+            <li>
+              {episodes_test[Object.keys(episodes_test)[i]]["dr"].specialty}
+            </li>
+            <li>
+              Dr.{episodes_test[Object.keys(episodes_test)[i]]["dr"].name}
+            </li>
+          </ul>
+        </VerticalTimelineElement>
+      );
+    }
+  }
+
   render() {
     const {
       episode_1_dr,
@@ -97,8 +167,28 @@ class Episodes extends React.Component {
       episode_1_hic,
       episode_2_hic,
       episode_3_hic,
-      episode_4_hic
+      episode_4_hic,
+
+      episodes_test,
+
+      test,
+      t,
+      episodes_dr,
+      episodes_hic,
+      episodes
     } = this.state;
+
+    //console.log("ooooooo:" + JSON.stringify(episodes_test[document_id]));
+    //console.log("iiiii:" + JSON.stringify(t[0]));
+    console.log(
+      "jjjj:" + JSON.stringify(episodes_test[Object.keys(episodes_test)[0]])
+    );
+    console.log(
+      "test object keys for second layer:" + Object.keys(episodes_test)
+    );
+
+    //TO BE FIXED!!!!!!!
+    //console.log("pppp:" +JSON.stringify(episodes_test[Object.keys(episodes_test)[0]]["dr"]) );
 
     return (
       <Fragment className="timeline-space">
