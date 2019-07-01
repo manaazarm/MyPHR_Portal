@@ -21,7 +21,8 @@ class Home extends Component {
 
     this.state = {
       client: {},
-      basicInfo: {}
+      basicInfo: {},
+      
     };
   }
   componentDidMount() {
@@ -41,6 +42,18 @@ class Home extends Component {
         JSON.parse(localStorage.getItem("oneUser")).token
       )
       .then(data => this.setState({ basicInfo: data }));
+
+    userService
+      .getEpisodes(
+        JSON.parse(localStorage.getItem("oneUser")).client_id,
+        JSON.parse(localStorage.getItem("oneUser")).token,
+        1
+      )
+      .then(data =>
+        this.setState({
+          episodes_test: data
+        })
+      );
   }
 
   render() {
