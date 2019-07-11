@@ -16,9 +16,22 @@ export const userService = {
   getDietaryRegimen,
   getEpisodes,
   getHealthProfile, //real
-  getPhysician //real
-};
+  getPhysician, //real
 
+  //fetch POST methods
+  updateLanguage,
+  addDiet,
+  addAdvanceDirective,
+  editContactInfo,
+  editCaregivers,
+  editCaregiverContacts
+};
+const CLIENT = {
+  client_id: "df39a2a1-c8d1-484e-a5f4-ec6bfd08e345",
+  token: "5c7839bd7f592bf6533f9bd4be3c8cc63d088f4e59a27c65d74284668c6ecc49",
+  user_id: "4cb26605-7a80-4d86-9505-6b8492dab2ce",
+  user_type: "patient"
+};
 //for fake api, responsing to backend.js
 function login(username, password) {
   const requestOptions = {
@@ -48,11 +61,6 @@ function login(username, password) {
 function newLogin(username, password) {
   //each time fresh local storage
   localStorage.removeItem("oneUser");
-  const requestOptions = {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, password })
-  };
 
   return fetch(
     `http://localhost:5000/login?username=${username}&password=${password}`
@@ -63,7 +71,7 @@ function newLogin(username, password) {
       if (user) {
         // store user details and basic auth credentials in local storage
         // to keep user logged in between page refreshes
-        localStorage.setItem("oneUser", JSON.stringify(user));
+        localStorage.setItem("oneUser", JSON.stringify(CLIENT));
         console.log(localStorage.getItem("oneUser"));
         //store client_id and token locally
       }
@@ -245,6 +253,115 @@ function getAll() {
   return fetch(`${config.apiUrl}/users`, requestOptions).then(handleResponse);
 }
 
+function updateLanguage(client_id, token, service_language) {
+  return fetch(
+    `http://localhost:5000/client/${client_id}/service_language?token=${token}&service_language=${service_language}`,
+    {
+      method: "POST",
+      //mode: "CORS",
+
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }
+  )
+    .then(res => {
+      return res;
+    })
+    .catch(err => err);
+}
+function addDiet(client_id, token, diet) {
+  return fetch(
+    `http://localhost:5000/client/${client_id}/add_diet?token=${token}&diet=${diet}`,
+    {
+      method: "POST",
+      //mode: "CORS",
+
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }
+  )
+    .then(res => {
+      return res;
+    })
+    .catch(err => err);
+}
+function addAdvanceDirective(client_id, token, advance_directive) {
+  return fetch(
+    `http://localhost:5000/client/${client_id}/add_advance_directive?token=${token}&advance_directive=${advance_directive}`,
+    {
+      method: "POST",
+      //mode: "CORS",
+
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }
+  )
+    .then(res => {
+      return res;
+    })
+    .catch(err => err);
+}
+function editContactInfo(client_id, token, category, text, type) {
+  return fetch(
+    `http://localhost:5000/client/${client_id}/edit_contact_info?token=${token}&category=${category}&text=${text}&type=${type}`,
+    {
+      method: "POST",
+      //mode: "CORS",
+
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }
+  )
+    .then(res => {
+      return res;
+    })
+    .catch(err => err);
+}
+function editCaregivers(client_id, token, name, relationship, is_primary) {
+  return fetch(
+    `http://localhost:5000/client/${client_id}/edit_caregivers?token=${token}&name=${name}&relationship=${relationship}&is_primary=${is_primary}`,
+    {
+      method: "POST",
+      //mode: "CORS",
+
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }
+  )
+    .then(res => {
+      return res;
+    })
+    .catch(err => err);
+}
+function editCaregiverContacts(
+  client_id,
+  token,
+  category,
+  text,
+  type,
+  is_primary
+) {
+  return fetch(
+    `http://localhost:5000/client/${client_id}/edit_caregiver_contacts?token=${token}&category=${category}&text=${text}&type=${type}&is_primary=${is_primary}`,
+    {
+      method: "POST",
+      //mode: "CORS",
+
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }
+  )
+    .then(res => {
+      return res;
+    })
+    .catch(err => err);
+}
 function handleResponse(response) {
   return response.text().then(text => {
     const data = text && JSON.parse(text);

@@ -4,6 +4,10 @@ import { Col, Row, Nav, Container } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { TabContainer, TabPane, TabContent } from "react-bootstrap";
 import { userService } from "./service";
+import BasicInfo from "./Edit/basicInfo";
+import EditProfile from "./Edit/editProfile";
+import EditContact from "./Edit/editContact";
+import EditCaregivers from "./Edit/editCaregivers";
 
 class Profile extends React.Component {
   constructor(props, context) {
@@ -18,7 +22,7 @@ class Profile extends React.Component {
       client: {},
       basicInfo: {},
       addressInfo: [],
-      physician: {},
+      physician: [],
       phoneInfo: [],
       emailInfo: []
     };
@@ -30,13 +34,6 @@ class Profile extends React.Component {
       basicInfo: JSON.parse(localStorage.getItem("basicInfo"))
     });
 
-    //mock api calls
-    /*
-    userService
-      .getAddress(JSON.parse(localStorage.getItem("user")).id)
-      .then(data => this.setState({ address: JSON.parse(data) }));
-     
-*/
     userService
       .getCaregivers(JSON.parse(localStorage.getItem("oneUser")).client_id)
       .then(data => this.setState({ c: JSON.parse(data) }));
@@ -82,14 +79,14 @@ class Profile extends React.Component {
       )
       .then(data =>
         this.setState({
-          physician: data[Object.keys(data)[0]]["dr"]
+          physician: data[0]
         })
       );
 
     //user from real api
-    console.log("oneUser:" + localStorage.getItem("oneUser"));
+    console.log("user:" + localStorage.getItem("oneUser"));
     console.log("basic info:" + localStorage.getItem("basicInfo"));
-    console.log("ppp:" + localStorage.getItem("physician"));
+    console.log("physician:" + localStorage.getItem("physician"));
   }
 
   render() {
@@ -180,246 +177,50 @@ class Profile extends React.Component {
           <Col sm={9}>
             <TabContent class="tab-content">
               <TabPane eventKey="first">
-                <p>
-                  {" "}
-                  <strong>
-                    {basicInfo.firstname} {basicInfo.surname}
-                  </strong>
-                </p>
-                <p>
-                  <strong>Date of Birth:</strong> {basicInfo.dob}
-                </p>
-                <p>
-                  {" "}
-                  <strong>Gender: </strong>
-                  {basicInfo.gender}
-                </p>
-                <p>
-                  {" "}
-                  <strong>Service Language: </strong>{" "}
-                  {basicInfo.service_language}
-                </p>
-                <p>
-                  {" "}
-                  <strong>Last Access:</strong>
-                  {basicInfo.last_access_date}
-                </p>
+                <BasicInfo />
               </TabPane>
               <TabPane eventKey="second">
-                <p>
-                  {" "}
-                  <strong>Dietary Regimen: </strong>
-                  {basicInfo.dietary_regimen}
-                </p>
-                <p>
-                  {" "}
-                  <strong>Advance Directives:</strong>{" "}
-                  {basicInfo.advance_directives}
-                </p>
-                <p>
-                  <strong>Active Diagnosis: </strong>
-                </p>
-                <div>
-                  {healthProfile.map((m, index) => (
-                    <div>
-                      {m.diagnosing_healthcare_provider_id == "" ? (
-                        <div />
-                      ) : (
-                        <div>
-                          <li> >></li>
-                          <li> diagnosed on: </li>
-                          <li> diagnosed by: </li>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-
-                <p>
-                  <strong>Allergies: </strong>
-                </p>
-                <div>
-                  {healthProfile.map((m, index) => (
-                    <div>
-                      {m.is_allergy ? (
-                        <div>
-                          <li> </li>
-                        </div>
-                      ) : (
-                        <div />
-                      )}
-                    </div>
-                  ))}
-                </div>
-                <p>
-                  <strong>Risk and Safety Codes: </strong>
-                </p>
-                <div>
-                  {healthProfile.map((h, index) => (
-                    <div>
-                      {h.is_risk_and_safety_issue ? (
-                        <div> >>{h.name}</div>
-                      ) : (
-                        <div />
-                      )}
-                    </div>
-                  ))}
-                </div>
+                <EditProfile />
               </TabPane>
               <TabPane eventKey="third">
-                <p>
-                  {addressInfo.map(a => (
-                    <div>
-                      <strong>Home Address:</strong> {a.unit_number}{" "}
-                      {a.street_name} {a.street_type}, {a.city}, {a.country},{" "}
-                      {a.postal_code}{" "}
-                    </div>
-                  ))}
-                </p>
-                <div />
-                <p>
-                  <strong>Mailing Address:</strong>
-                </p>
-                <p>
-                  <strong>Other Address:</strong>{" "}
-                </p>
-                <p>
-                  {phoneInfo.map(p => (
-                    <div>
-                      <strong>Cell Phone:</strong> {p.number}
-                    </div>
-                  ))}
-                </p>
-                <p>
-                  <strong>Home Phone: </strong>
-                </p>
-                <p>
-                  <strong>Email: </strong>
-                  {emailInfo}
-                </p>
+                <EditContact />
               </TabPane>
               <TabPane eventKey="fourth">
-                <div>
-                  {caregiver.map((careg, index) => (
-                    <div>
-                      {careg.is_primary_caregiver ? (
-                        <div>
-                          <p>
-                            <strong>Primary Contact:</strong>{" "}
-                          </p>
-                          <ul>
-                            <li>
-                              <strong>Name: </strong>
-                              {careg.firstname} {careg.surname}
-                            </li>
-                            <li>
-                              <strong> Relationship:</strong>{" "}
-                              {careg.relationship}
-                            </li>
-                            <li>
-                              <strong> Home Address:</strong>{" "}
-                            </li>
-                            <li>
-                              <strong> Mailing Address:</strong>{" "}
-                            </li>
-                            <li>
-                              <strong> Cell Phone:</strong>{" "}
-                            </li>
-                            <li>
-                              <strong> Home Phone:</strong>{" "}
-                            </li>
-                            <strong> Email:</strong>{" "}
-                          </ul>
-                        </div>
-                      ) : (
-                        <div>
-                          <p>
-                            <strong>Second Contact:</strong>{" "}
-                          </p>
-                          <ul>
-                            <li>
-                              {" "}
-                              Name: {careg.firstname} {careg.surname}
-                            </li>
-                            <li>
-                              <strong> Relationship:</strong>{" "}
-                              {careg.relationship}{" "}
-                            </li>
-                            <li>
-                              <strong> Home Address:</strong>{" "}
-                            </li>
-                            <li>
-                              <strong> Mailing Address:</strong>{" "}
-                            </li>
-                            <li>
-                              <strong> Cell Phone:</strong>{" "}
-                            </li>
-                            <li>
-                              <strong> Home Phone:</strong>{" "}
-                            </li>
-                            <li>
-                              <strong> Email:</strong>{" "}
-                            </li>
-                          </ul>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
+                <EditCaregivers />
               </TabPane>
               <TabPane eventKey="fifth">
                 <div>
-                  {physician.specialty == "Family Medicine" ? (
-                    <div>
-                      <p>
-                        <strong>Family Physicians:</strong>{" "}
-                      </p>
-                      <ul>
-                        <li>
-                          <strong> Name:</strong> {physician.name}
-                        </li>
-                        <li>
-                          <strong> Address:</strong>{" "}
-                        </li>
-                        <li>
-                          <strong> Phone:</strong>{" "}
-                        </li>
-                      </ul>
-                      <p />
-                      <p>
-                        <strong>Neurologist:</strong>{" "}
-                      </p>
-                      <ul>
-                        <li>
-                          <strong> Name:</strong>{" "}
-                        </li>
-                        <li>
-                          <strong> Address:</strong>{" "}
-                        </li>
-                        <li>
-                          <strong> Phone:</strong>{" "}
-                        </li>
-                      </ul>
-                    </div>
-                  ) : (
-                    <div>
-                      <p>
-                        <strong>Family Physicians:</strong>
-                      </p>
-                      <ul>
-                        <li> Name: </li>
-                        <li> Address: </li>
-                        <li> Phone: </li>
-                      </ul>
-                      <p />
-                      <p>Neurologist: </p>
-                      <ul>
-                        <li> Name: </li>
-                        <li> Address: </li>
-                        <li> Phone: </li>
-                      </ul>
-                    </div>
-                  )}
+                  <div>
+                    <p>
+                      <strong>Family Physicians</strong>{" "}
+                    </p>
+                    <ul>
+                      <li>
+                        <strong> Name:</strong> {physician.physician_name}
+                      </li>
+                      <li>
+                        <strong> Address:</strong>{" "}
+                      </li>
+                      <li>
+                        <strong> Phone:</strong>{" "}
+                      </li>
+                    </ul>
+                    <p />
+                    <p>
+                      <strong>Neurologist:</strong>{" "}
+                    </p>
+                    <ul>
+                      <li>
+                        <strong> Name:</strong>{" "}
+                      </li>
+                      <li>
+                        <strong> Address:</strong>{" "}
+                      </li>
+                      <li>
+                        <strong> Phone:</strong>{" "}
+                      </li>
+                    </ul>
+                  </div>
                 </div>
               </TabPane>
             </TabContent>

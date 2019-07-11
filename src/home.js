@@ -21,8 +21,7 @@ class Home extends Component {
 
     this.state = {
       client: {},
-      basicInfo: {},
-      
+      basicInfo: {}
     };
   }
   componentDidMount() {
@@ -66,16 +65,14 @@ class Home extends Component {
             <div class="row">
               <div class="column1">
                 <img src={photo} alt="Photo" />
+                <div class="left-container">
+                  <h3>
+                    {basicInfo.firstname} {basicInfo.surname}
+                  </h3>
 
-                <h3>
-                  {basicInfo.firstname} {basicInfo.surname}
-                </h3>
-
-                <div class="editor">
-                  <a href="#news">Edit Primary Information</a>
-                  <a href="#news">Notice of Name Change</a>
-                  <a href="#news">Change Contact Information</a>
-                  <a href="/login">Sign out</a>
+                  <div class="editor">
+                    <a href="/login">Sign out</a>
+                  </div>
                 </div>
               </div>
 
