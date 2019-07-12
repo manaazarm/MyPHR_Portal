@@ -87,6 +87,7 @@ class Profile extends React.Component {
     console.log("user:" + localStorage.getItem("oneUser"));
     console.log("basic info:" + localStorage.getItem("basicInfo"));
     console.log("physician:" + localStorage.getItem("physician"));
+    localStorage.setItem("addressInfo", this.state.addressInfo);
   }
 
   render() {

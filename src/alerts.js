@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "./App.css";
+import Autocomplete from "react-google-autocomplete";
 
 class Alerts extends React.Component {
   constructor(props, context) {
@@ -17,6 +18,14 @@ class Alerts extends React.Component {
         <br />
 
         <h5>Active Alerts:</h5>
+        <Autocomplete
+          style={{ width: "90%" }}
+          onPlaceSelected={place => {
+            console.log(place);
+          }}
+          types={["(regions)"]}
+          componentRestrictions={{ country: "ru" }}
+        />
       </div>
     );
   }

@@ -12,7 +12,9 @@ import "react-phone-input-2/dist/style.css";
 
 const APP_ID_HERE = "Fz8mRRSVvIpzxV6B1qa1";
 const APP_CODE_HERE = "miB6oUEV_kPBGp7CQTQTAg";
-
+const TOKEN = JSON.parse(localStorage.getItem("oneUser")).token;
+const ID = JSON.parse(localStorage.getItem("oneUser")).client_id;
+const clientToEdit = JSON.parse(localStorage.getItem("contactInfo"));
 /*edit components
  *auto complete addresses
  *phone number and email validators
@@ -35,28 +37,91 @@ class EditContact extends React.Component {
     this.onClear = this.onClear.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handlePhoneChange = this.handlePhoneChange.bind(this);
-  }
+    this.handleOAChange = this.handleOAChange.bind(this);
+    this.handleMAChange = this.handleMAChange.bind(this);
+    this.handleHPChange = this.handleHPChange.bind(this);
 
+    this.handleEChange = this.handleEChange.bind(this);
+  }
+  getInitialState() {
+    return {
+      address: {
+        street_number: "",
+        city: "",
+        state: "",
+        postal_code: "",
+        country: ""
+      },
+      isLoading: true,
+      client: {},
+      address: {},
+      isEditContact: false,
+      validated: false,
+      query: "",
+      locationId: "",
+      isChecked: false,
+      coords: {},
+      data: {},
+
+      //UPDATING........
+      phoneInfo: clientToEdit[1][1],
+      emailInfo: clientToEdit[2][1],
+      addressInfo: clientToEdit[0][1],
+      homeAddress: {},
+      mailingAddress: {},
+      otherAddress: {},
+      homePhone: {},
+      cellPhone: {},
+      newEmail: {},
+
+      //new input values:
+      newMA: {},
+      newOA: {},
+      newHP: {},
+      newCP: {},
+
+      errors: {}
+    };
+  }
   componentDidMount() {
-    this.setState({
-      client: JSON.parse(localStorage.getItem("client")),
-      address: JSON.parse(localStorage.getItem("address")),
-      cell_phone: JSON.parse(localStorage.getItem("address")).cell_phone,
-      home_phone: JSON.parse(localStorage.getItem("address")).home_phone
-    });
-    userService
-      .getContactInfo(
-        JSON.parse(localStorage.getItem("oneUser")).client_id,
-        1,
-        JSON.parse(localStorage.getItem("oneUser")).token
-      )
-      .then(data =>
-        this.setState({
-          addressInfo: data[0][1],
-          phoneInfo: data[1][1],
-          emailInfo: data[2][1]
-        })
-      );
+    const ha = this.state.addressInfo.filter(word => word.type == "home");
+    this.setState({ homeAddress: ha[0].address });
+
+    const ma = this.state.addressInfo.filter(word => word.type == "mailing");
+    if (ma.length != 0) {
+      this.setState({ mailingAddress: ma[0].address, newMA: ma[0].address });
+    } else {
+      this.setState({ mailingAddress: ma[0], newMA: ma[0] });
+    }
+
+    const oa = this.state.addressInfo.filter(word => word.type == "other");
+    if (oa.length != 0) {
+      this.setState({ otherAddress: oa[0].address, newOA: oa[0].address });
+    } else {
+      this.setState({ otherAddress: oa[0], newOA: oa[0] });
+    }
+
+    const cp = this.state.phoneInfo.filter(word => word.type == "cell");
+    if (cp.length != 0) {
+      this.setState({
+        cellPhone: "+" + cp[0].country_code + " " + cp[0].number,
+        newCP: "+" + cp[0].country_code + " " + cp[0].number
+      }); ///IF Differnet code????????
+    } else {
+      this.setState({ cellPhone: cp[0], newCP: cp[0] }); ///IF Differnet code????????
+    }
+
+    const hp = this.state.phoneInfo.filter(word => word.type == "home");
+    if (hp.length != 0) {
+      this.setState({
+        homePhone: "+" + hp[0].country_code + " " + hp[0].number,
+        newHP: "+" + hp[0].country_code + " " + hp[0].number
+      });
+    } else {
+      this.setState({ homePhone: hp[0], newHP: hp[0] });
+    }
+
+    this.setState({ newEmail: this.state.emailInfo });
   }
   editCancel() {
     this.setState({
@@ -109,31 +174,6 @@ class EditContact extends React.Component {
       });
   }
 
-  getInitialState() {
-    return {
-      address: {
-        street_number: "",
-        city: "",
-        state: "",
-        postal_code: "",
-        country: ""
-      },
-      isLoading: true,
-      client: {},
-      address: {},
-      isEditContact: false,
-      validated: false,
-      query: "",
-      locationId: "",
-      isChecked: false,
-      coords: {},
-      data: {},
-
-      phoneInfo: [],
-      emailInfo: [],
-      addressInfo: []
-    };
-  }
   editContact() {
     this.setState({
       isEditContact: true
@@ -170,7 +210,58 @@ class EditContact extends React.Component {
 
   //handle phone number change
   handlePhoneChange(value) {
-    this.setState({ cell_phone: value });
+    this.setState({
+      newCP: value
+    });
+  }
+  handleHPChange(value) {
+    this.setState({
+      newHP: value
+    });
+  }
+  //handle addresses change
+  handleMAChange(event) {
+    this.setState({ newMA: event.target.value });
+  }
+  handleOAChange(event) {
+    this.setState({ newOA: event.target.value });
+  }
+
+  handleValidation() {
+    let email = this.state.newEmail;
+    let errors = {};
+    let formIsValid = true;
+
+    //Email
+    if (!email) {
+      formIsValid = false;
+      errors["email"] = "Email cannot be empty";
+    }
+
+    if (typeof email !== "undefined") {
+      let lastAtPos = email.lastIndexOf("@");
+      let lastDotPos = email.lastIndexOf(".");
+
+      if (
+        !(
+          lastAtPos < lastDotPos &&
+          lastAtPos > 0 &&
+          email.indexOf("@@") == -1 &&
+          lastDotPos > 2 &&
+          email.length - lastDotPos > 2
+        )
+      ) {
+        formIsValid = false;
+        errors["email"] = "Email is not valid";
+      }
+    }
+
+    this.setState({ errors: errors });
+    return formIsValid;
+  }
+
+  handleEChange(e) {
+    this.setState({ newEmail: e.target.value });
   }
   //when validation (clicking save button)
   onCheck(event) {
@@ -245,11 +336,68 @@ class EditContact extends React.Component {
 
     //if all validated, save data!
     if (this.state.isChecked & !this.state.coords & isFormValid) {
-      alert("saved!");
+      alert("saved!" + this.state.data.email.value);
     }
     console.log("new address:" + JSON.stringify(this.state.address));
+
+    //NEW: validate email format !!!
+    if (!this.handleValidation()) {
+    }
+    //call edit apis:
+    //mailing address
+    if (this.state.newMA == this.state.mailingAddress) {
+    } else {
+      userService.editContactInfo(
+        ID,
+        TOKEN,
+        "address",
+        this.state.newMA,
+        "mailing"
+      );
+      this.setState({ mailingAddress: this.state.newMA });
+    }
+
+    //other address
+    if (this.state.newOA == this.state.otherAddress) {
+    } else {
+      userService.editContactInfo(
+        ID,
+        TOKEN,
+        "address",
+        this.state.newOA,
+        "other"
+      );
+      this.setState({ otherAddress: this.state.newOA });
+    }
+
+    //cell phone
+    if (this.state.newCP == this.state.cellPhone) {
+    } else {
+      userService.editContactInfo(ID, TOKEN, "phone", this.state.newCP, "cell");
+      this.setState({ cellPhone: this.state.newCP });
+    }
+    //home phone
+    if (this.state.newHP == this.state.homePhone) {
+    } else {
+      userService.editContactInfo(ID, TOKEN, "phone", this.state.newHP, "home");
+      this.setState({ homePhone: this.state.newHP });
+    }
+
+    //email
+    if (this.state.newEmail == this.state.emailInfo) {
+    } else {
+      userService.editContactInfo(
+        ID,
+        TOKEN,
+        "email",
+        this.state.newEmail,
+        "main"
+      );
+      this.setState({ emailInfo: this.state.newEmail });
+    }
   }
 
+  //alert messages
   alert() {
     if (!this.state.isChecked) {
       return;
@@ -272,37 +420,40 @@ class EditContact extends React.Component {
   render() {
     let result = this.alert();
     const {
-      client,
       address,
       validated,
-      cell_phone,
-      home_phone,
+
       isEditContact,
       addressInfo,
       phoneInfo,
-      emailInfo
+      emailInfo,
+
+      homeAddress,
+      mailingAddress,
+      otherAddress,
+      cellPhone,
+      homePhone,
+
+      data,
+      newMA,
+      newOA,
+      newCP,
+      newHP,
+      newEmail
     } = this.state;
+
+    console.log("test MA :" + JSON.stringify(this.state.errors));
     return (
       <div>
         {!isEditContact ? (
           <div>
             <p>
-              {addressInfo.map(a => (
-                <div>
-                  {a.type == "home" ? (
-                    <div>
-                      <strong>Home Address: </strong>
-                      {a.address}
-                    </div>
-                  ) : (
-                    <div />
-                  )}
-                </div>
-              ))}
+              <strong>Home Address: </strong>
             </p>
 
             <p>
               <strong>Mailing Address: </strong>
+
               {addressInfo.map((a, index) => (
                 <div>
                   {a.type == "mailing" ? <div>{a.address}</div> : <div />}
@@ -318,35 +469,15 @@ class EditContact extends React.Component {
               ))}
             </p>
             <p>
+              <strong>Cell Phone: </strong>
               {phoneInfo.map(p => (
-                <div>
-                  {p.type == "cell" ? (
-                    <div>
-                      <strong>Cell Phone: </strong>
-                      {p.number}
-                    </div>
-                  ) : (
-                    <div>
-                      <strong>Cell Phone: </strong>
-                    </div>
-                  )}
-                </div>
+                <div>{p.type == "cell" ? <div>{p.number}</div> : <div />}</div>
               ))}
             </p>
             <p>
+              <strong>Home Phone: </strong>
               {phoneInfo.map(p => (
-                <div>
-                  {p.type == "home" ? (
-                    <div>
-                      <strong>Home Phone: </strong>
-                      {p.number}
-                    </div>
-                  ) : (
-                    <div>
-                      <strong>Home Phone: </strong>
-                    </div>
-                  )}
-                </div>
+                <div>{p.type == "home" ? <div>{p.number}</div> : <div />}</div>
               ))}
             </p>
             <p>
@@ -361,18 +492,19 @@ class EditContact extends React.Component {
         ) : (
           ///////////////////////////////////////EDIT ////////////////////////////////////////
           <div>
-            <p>
-              <strong>Home Address:</strong>
-              <AddressSuggest
-                query={this.state.query}
-                value={address.street_number}
-                onChange={this.onQuery}
-                placeholder={address.street_number}
-              />
-              <input placeholder="city" value={address.city} /> ,{" "}
-              <input placeholder="country" value={address.country} />,{" "}
-              <input placeholder="postal code" value={address.postalCode} />
-              {/**
+            <form onSubmit={this.handleSubmit}>
+              <p>
+                <strong>Home Address:</strong>
+                <AddressSuggest
+                  query={this.state.query}
+                  value={address.street_number}
+                  onChange={this.onQuery}
+                  placeholder={address.street_number}
+                />
+                <input placeholder="city" value={address.city} /> ,{" "}
+                <input placeholder="country" value={address.country} />,{" "}
+                <input placeholder="postal code" value={address.postalCode} />
+                {/**
 
           <AddressInput
             street={this.state.address.street}
@@ -383,122 +515,76 @@ class EditContact extends React.Component {
             onChange={this.onAddressChange}
           />
  */}
-              <br />
-              {result}
-            </p>
+                <br />
+                {result}
+              </p>
 
-            <p>
-              {addressInfo.map(a => (
-                <div>
-                  {a.type == "mailing" ? (
-                    <div>
-                      <strong>Mailing Address: </strong>{" "}
-                      <input placeholder="mailing address" value={a.address} />
-                    </div>
-                  ) : (
-                    <div>
-                      <strong>Mailing Address: </strong>{" "}
-                      <input placeholder="mailing address" value="" />
-                    </div>
-                  )}
-                </div>
-              ))}
-            </p>
-            <p>
-              {addressInfo.map(a => (
-                <div>
-                  {a.type == "other" ? (
-                    <div>
-                      <strong>Other Address: </strong>{" "}
-                      <input placeholder="other address" value={a.address} />
-                    </div>
-                  ) : (
-                    <div>
-                      <strong>Other Address: </strong>{" "}
-                      <input placeholder="other address" value="" />
-                    </div>
-                  )}
-                </div>
-              ))}
-            </p>
-            <p>
-              {phoneInfo.map(p => (
-                <div>
-                  {p.type == "cell" ? (
-                    <div>
-                      <strong>Cell Phone: </strong>
-                      <ReactPhoneInput
-                        placeholder="Enter phone number"
-                        defaultCountry={"ca"}
-                        value={p.country_code + p.number}
-                        onChange={cell_phone => this.setState({ cell_phone })}
-                      />
-                    </div>
-                  ) : (
-                    <div>
-                      <strong>Cell Phone: </strong>
-                      <ReactPhoneInput
-                        placeholder="Enter phone number"
-                        defaultCountry={"ca"}
-                        value=""
-                        onChange={cell_phone => this.setState({ cell_phone })}
-                      />
-                    </div>
-                  )}
-                </div>
-              ))}
-            </p>
-
-            <p>
-              {phoneInfo.map(p => (
-                <div>
-                  {p.type == "home" ? (
-                    <div>
-                      <strong>Home Phone: </strong>
-                      <ReactPhoneInput
-                        placeholder="Enter phone number"
-                        defaultCountry={"ca"}
-                        value={p.country_code + p.number}
-                        onChange={home_phone => this.setState({ home_phone })}
-                      />
-                    </div>
-                  ) : (
-                    <div>
-                      <strong>Home Phone: </strong>
-                      <ReactPhoneInput
-                        placeholder="Enter phone number"
-                        defaultCountry={"ca"}
-                        value=""
-                        onChange={home_phone => this.setState({ home_phone })}
-                      />
-                    </div>
-                  )}
-                </div>
-              ))}
-            </p>
-
-            <p>
               <p>
-                <strong>Email:</strong>{" "}
-                <Field
-                  validator="isEmail"
-                  required
-                  name="email"
-                  placeholder="Email"
-                  onChange={this.handleChange}
-                  value={this.state.data.email}
-                  shouldValidateInputs={this.state.shouldValidateInputs}
+                <strong>Mailing Address: </strong>
+                <input
+                  placeholder="mailing address"
+                  value={newMA || ""}
+                  onChange={this.handleMAChange}
                 />
               </p>
-              <ButtonToolbar>
-                <Button variant="secondary" onClick={this.onCheck}>
-                  Save
-                </Button>
-                <Button variant="secondary" onClick={this.editCancel}>
-                  Cancel
-                </Button>
-              </ButtonToolbar>
-            </p>
+              <p>
+                <strong>Other Address: </strong>{" "}
+                <input value={newOA || ""} onChange={this.handleOAChange} />
+              </p>
+              <p>
+                <strong>Cell Phone: </strong>
+
+                <div>
+                  <ReactPhoneInput
+                    placeholder="Enter phone number"
+                    defaultCountry={"ca"}
+                    value={newCP || ""}
+                    onChange={this.handlePhoneChange}
+                  />
+                </div>
+              </p>
+
+              <p>
+                <strong>Home Phone: </strong>
+                <div>
+                  <ReactPhoneInput
+                    placeholder="Enter phone number"
+                    defaultCountry={"ca"}
+                    value={newHP || ""}
+                    onChange={this.handleHPChange}
+                  />
+                </div>
+              </p>
+
+              <p>
+                <p>
+                  <strong>Email:</strong>{" "}
+                  <Field
+                    validator="isEmail"
+                    required
+                    name="email"
+                    placeholder="Email"
+                    onChange={this.handleChange}
+                    value={this.state.data.email}
+                    shouldValidateInputs={this.state.shouldValidateInputs}
+                  />
+                  <input
+                    type="email"
+                    value={newEmail}
+                    onChange={this.handleEChange}
+                  />
+                  <span className="error">{this.state.errors["email"]}</span>
+                </p>
+                <ButtonToolbar>
+                  <Button variant="secondary" onClick={this.onCheck}>
+                    Save
+                  </Button>
+                  <Button variant="secondary" onClick={this.editCancel}>
+                    Cancel
+                  </Button>
+                </ButtonToolbar>
+              </p>
+            </form>
           </div>
         )}
       </div>
