@@ -18,8 +18,7 @@ class Episodes extends React.Component {
     super(props, context);
     this.state = {
       key: "home",
-      episodes: [],
-
+      episodes_test: {},
       isLoading: true
     };
     this.scrollToTop = this.scrollToTop.bind(this);
@@ -39,7 +38,7 @@ class Episodes extends React.Component {
       )
       .then(data =>
         this.setState({
-          episodes: data.sort(this.comp),
+          episodes_test: data,
           isLoading: false
         })
       );
@@ -71,18 +70,18 @@ class Episodes extends React.Component {
     return [date.getFullYear(), mnth, day].join("-");
   }
 
-  //sort JSON array by date
-  comp(b, a) {
-    return new Date(a.start_date).getTime() - new Date(b.end_date).getTime();
-  }
-
   componentWillUnmount() {
     Events.scrollEvent.remove("begin");
     Events.scrollEvent.remove("end");
   }
 
   render() {
-    const { episodes, isLoading } = this.state;
+    const { episodes_test, isLoading } = this.state;
+
+    var arr = [];
+    Object.keys(episodes_test).forEach(function(key) {
+      arr.push(episodes_test[key]);
+    });
 
     if (isLoading) {
       return <div>is loading...</div>;
@@ -101,12 +100,16 @@ class Episodes extends React.Component {
               border: "0.1px solid grey"
             }}
           >
-            {episodes.map(item => (
-              <div>
+            {arr.map(item => (
+              <div
+                key={item.dr.name}
+                label={item.dr.name}
+                value={item.hic.name}
+              >
                 <VerticalTimeline>
                   <VerticalTimelineElement
                     className="vertical-timeline-element--work"
-                    date={this.convert(item.start_date)}
+                    date={this.convert(item.episode.start_date)}
                     iconStyle={{
                       background: "rgb(33, 150, 243)",
                       color: "#fff"
@@ -114,26 +117,26 @@ class Episodes extends React.Component {
                     position={"left"}
                   >
                     <h5 className="vertical-timeline-element-title">
-                      {item.Healthcare_provider_name}
+                      {item.hic.name}
                     </h5>
                     <ul>
                       <div>
-                        {item.is_active ? (
+                        {item.episode.is_active ? (
                           <div>
-                            <li>{this.convertFull(item.start_date)}</li>
+                            <li>{this.convertFull(item.episode.start_date)}</li>
                           </div>
                         ) : (
                           <div>
                             <li>
-                              {this.convertFull(item.start_date)} to{" "}
-                              {this.convertFull(item.end_date)}
+                              {this.convertFull(item.episode.start_date)} to{" "}
+                              {this.convertFull(item.episode.end_date)}
                             </li>
                           </div>
                         )}
                       </div>
 
-                      <li>{item.reason}</li>
-                      <li>Dr.{item.physician_name}</li>
+                      <li>{item.dr.specialty}</li>
+                      <li>Dr.{item.dr.name}</li>
                     </ul>
                   </VerticalTimelineElement>
                 </VerticalTimeline>

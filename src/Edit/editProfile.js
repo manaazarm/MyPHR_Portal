@@ -116,6 +116,7 @@ class EditProfile extends React.Component {
         this.state.newAdvanceDirective.value
       );
     }
+    this.setState({ isEditProfile: false });
   }
   render() {
     const {

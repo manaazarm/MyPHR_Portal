@@ -25,7 +25,7 @@ class BasicInfo extends React.Component {
         start_date: clientToEdit.start_date
       },
       isEditBasic: false, ///remove from state
-      language: clientToEdit.service_language
+      newLanguage: clientToEdit.service_language
     };
 
     //TO BE FIXED: cancel has problem!!!
@@ -48,19 +48,18 @@ class BasicInfo extends React.Component {
   }
   editCancel() {
     this.setState({
-      isEditBasic: false,
-      basic: {
-        ...this.state.basic,
-        service_language: this.state.basic.service_language
-      }
+      isEditBasic: false
     });
   }
   handleChange(event) {
     this.setState({
+      /*
       basic: {
         ...this.state.basic,
         service_language: event.target.value
-      }
+      },
+      */
+      newLanguage: event.target.value
     });
   }
   handleSubmit(event) {
@@ -71,7 +70,7 @@ class BasicInfo extends React.Component {
     userService.updateLanguage(
       this.state.basic.client_id,
       TOKEN,
-      this.state.basic.service_language
+      this.state.newLanguage
     );
   }
   render() {
@@ -131,7 +130,7 @@ class BasicInfo extends React.Component {
             <p>
               <strong>Service Language:</strong>{" "}
               <select
-                value={this.state.basic.service_language}
+                value={this.state.newLanguage}
                 onChange={this.handleChange}
               >
                 <option value="English">English</option>

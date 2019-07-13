@@ -122,6 +122,7 @@ class EditCaregivers extends React.Component {
         false
       );
     }
+    this.setState({ isEditCaregivers: false });
   }
   render() {
     const {

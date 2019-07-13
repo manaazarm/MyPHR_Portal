@@ -229,6 +229,7 @@ class EditContact extends React.Component {
 
   handleValidation() {
     let email = this.state.newEmail;
+
     let errors = {};
     let formIsValid = true;
 
@@ -395,6 +396,8 @@ class EditContact extends React.Component {
       );
       this.setState({ emailInfo: this.state.newEmail });
     }
+
+    this.setState({ isEditContact: false });
   }
 
   //alert messages
@@ -449,13 +452,18 @@ class EditContact extends React.Component {
           <div>
             <p>
               <strong>Home Address: </strong>
+              {addressInfo.map(a => (
+                <div class="inline">
+                  {a.type == "home" ? <div> {a.address} </div> : <div />}
+                </div>
+              ))}
             </p>
 
             <p>
               <strong>Mailing Address: </strong>
 
               {addressInfo.map((a, index) => (
-                <div>
+                <div class="inline">
                   {a.type == "mailing" ? <div>{a.address}</div> : <div />}
                 </div>
               ))}
@@ -463,7 +471,7 @@ class EditContact extends React.Component {
             <p>
               <strong>Other Address: </strong>
               {addressInfo.map(a => (
-                <div>
+                <div class="inline">
                   {a.type == "other" ? <div>{a.address}</div> : <div />}
                 </div>
               ))}
@@ -471,13 +479,17 @@ class EditContact extends React.Component {
             <p>
               <strong>Cell Phone: </strong>
               {phoneInfo.map(p => (
-                <div>{p.type == "cell" ? <div>{p.number}</div> : <div />}</div>
+                <div class="inline">
+                  {p.type == "cell" ? <div>{p.number}</div> : <div />}
+                </div>
               ))}
             </p>
             <p>
               <strong>Home Phone: </strong>
               {phoneInfo.map(p => (
-                <div>{p.type == "home" ? <div>{p.number}</div> : <div />}</div>
+                <div class="inline">
+                  {p.type == "home" ? <div>{p.number}</div> : <div />}
+                </div>
               ))}
             </p>
             <p>
