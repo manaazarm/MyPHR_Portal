@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import "./App.css";
+import "../App.css";
 import { Col, Row, Nav, Container } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { TabContainer, TabPane, TabContent } from "react-bootstrap";
-import { userService } from "./service";
+import { userService } from "../service";
 import BasicInfo from "./Edit/basicInfo";
 import EditProfile from "./Edit/editProfile";
 import EditContact from "./Edit/editContact";
@@ -24,24 +24,37 @@ class Profile extends React.Component {
       addressInfo: [],
       physician: [],
       phoneInfo: [],
-      emailInfo: []
+      emailInfo: [],
+      caregiver_client_id: []
     };
   }
 
   componentDidMount() {
     this.setState({
-      user: JSON.parse(localStorage.getItem("oneUser")),
-      basicInfo: JSON.parse(localStorage.getItem("basicInfo"))
+      user: JSON.parse(localStorage.getItem("oneUser"))
+      //basicInfo: JSON.parse(localStorage.getItem("basicInfo"))
     });
 
     userService
       .getCaregivers(JSON.parse(localStorage.getItem("oneUser")).client_id)
-      .then(data => this.setState({ c: JSON.parse(data) }));
+      .then(data =>
+        this.setState({
+          c: JSON.parse(data)
+        })
+      );
 
     /***
      * real api calls
      * contactInfo JSON format has error when printing
      */
+
+    userService
+      .getBasicInfo(
+        JSON.parse(localStorage.getItem("oneUser")).client_id,
+        JSON.parse(localStorage.getItem("oneUser")).user_id,
+        JSON.parse(localStorage.getItem("oneUser")).token
+      )
+      .then(data => this.setState({ basicInfo: data }));
     userService
       .getHealthProfile(
         JSON.parse(localStorage.getItem("oneUser")).client_id,
@@ -91,17 +104,7 @@ class Profile extends React.Component {
   }
 
   render() {
-    const {
-      basicInfo,
-      addressInfo,
-      phoneInfo,
-      emailInfo,
-      caregiver,
-      healthProfile,
-      physician
-    } = this.state;
-
-    console.log("physician is:" + JSON.stringify(physician));
+    const { physician } = this.state;
 
     return (
       <TabContainer id="left-tabs-example" defaultActiveKey="first">

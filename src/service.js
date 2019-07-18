@@ -12,11 +12,11 @@ export const userService = {
   getAll,
   getAddress, //fake
   getCaregivers, //fake
-  getComment,
-  getDietaryRegimen,
+
   getEpisodes,
   getHealthProfile, //real
   getPhysician, //real
+  getCaregiverContactInfo,
 
   //fetch POST methods
   updateLanguage,
@@ -26,12 +26,7 @@ export const userService = {
   editCaregivers,
   editCaregiverContacts
 };
-const CLIENT = {
-  client_id: "df39a2a1-c8d1-484e-a5f4-ec6bfd08e345",
-  token: "5c7839bd7f592bf6533f9bd4be3c8cc63d088f4e59a27c65d74284668c6ecc49",
-  user_id: "4cb26605-7a80-4d86-9505-6b8492dab2ce",
-  user_type: "patient"
-};
+
 //for fake api, responsing to backend.js
 function login(username, password) {
   const requestOptions = {
@@ -71,7 +66,7 @@ function newLogin(username, password) {
       if (user) {
         // store user details and basic auth credentials in local storage
         // to keep user logged in between page refreshes
-        localStorage.setItem("oneUser", JSON.stringify(CLIENT));
+        localStorage.setItem("oneUser", JSON.stringify(user));
         console.log(localStorage.getItem("oneUser"));
         //store client_id and token locally
       }
@@ -130,9 +125,6 @@ function getCaregivers(client_id) {
   );
 }
 
-function getComment() {}
-function getDietaryRegimen() {}
-
 //response to real api
 function getHealthProfile(client_id, token) {
   localStorage.removeItem("healthProfile");
@@ -154,6 +146,7 @@ function getHealthProfile(client_id, token) {
       return healthProfile;
     });
 }
+
 function getBasicInfo(client_id, user_id, token) {
   localStorage.removeItem("basicInfo");
   return fetch(
@@ -171,6 +164,7 @@ function getBasicInfo(client_id, user_id, token) {
       return basicInfo;
     });
 }
+
 function getContactInfo(client_id, is_active, token) {
   localStorage.removeItem("contactInfo");
   return fetch(
@@ -237,6 +231,33 @@ function getEpisodes(client_id, token, is_active) {
         console.log("episodes:" + localStorage.getItem("episodes"));
       }
       return episodes;
+    });
+}
+function getCaregiverContactInfo(
+  client_id,
+  token,
+  is_active,
+  caregiver_client_id
+) {
+  localStorage.removeItem("caregiverContactInfo");
+  return fetch(
+    `http://localhost:5000/caregiver_contact_info?client_id=${client_id}&token=${token}&is_active=${is_active}&caregiver_client_id=${caregiver_client_id}`
+  )
+    .then(handleResponse)
+    .then(caregiverContactInfo => {
+      // login successful if there's a user in the response
+      if (caregiverContactInfo) {
+        // store user details and basic auth credentials in local storage
+        // to keep user logged in between page refreshes
+        localStorage.setItem(
+          "caregiverContactInfo",
+          JSON.stringify(caregiverContactInfo)
+        );
+        console.log(
+          "caregiverContactInfo:" + localStorage.getItem("caregiverContactInfo")
+        );
+      }
+      return caregiverContactInfo;
     });
 }
 

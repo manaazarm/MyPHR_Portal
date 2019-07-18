@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
+import "../index.css";
 import App from "./App";
-import "./App.css";
-import { userService } from "./service";
+import "../App.css";
+import { userService } from "../service";
 import Profile from "./profile";
 import Episodes from "./episodes";
 import Alerts from "./alerts";
-import photo from "./photo.png";
+import photo from "../photo.png";
 import {
   Route,
   NavLink,

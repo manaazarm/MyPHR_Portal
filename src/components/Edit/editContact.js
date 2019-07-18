@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import "../App.css";
-import { userService } from "../service";
+import "../../App.css";
+import { userService } from "../../service";
 import { ButtonToolbar, Button, Form, InputGroup, Col } from "react-bootstrap";
 import AddressForm from "../autoAddress/AddressForm";
 import AddressSuggest from "../autoAddress/AddressSuggest";
@@ -12,8 +12,7 @@ import "react-phone-input-2/dist/style.css";
 
 const APP_ID_HERE = "Fz8mRRSVvIpzxV6B1qa1";
 const APP_CODE_HERE = "miB6oUEV_kPBGp7CQTQTAg";
-const TOKEN = JSON.parse(localStorage.getItem("oneUser")).token;
-const ID = JSON.parse(localStorage.getItem("oneUser")).client_id;
+
 const clientToEdit = JSON.parse(localStorage.getItem("contactInfo"));
 /*edit components
  *auto complete addresses
@@ -264,6 +263,9 @@ class EditContact extends React.Component {
   handleEChange(e) {
     this.setState({ newEmail: e.target.value });
   }
+
+  TOKEN = JSON.parse(localStorage.getItem("oneUser")).token;
+  ID = JSON.parse(localStorage.getItem("oneUser")).client_id;
   //when validation (clicking save button)
   onCheck(event) {
     let params = {
@@ -349,8 +351,8 @@ class EditContact extends React.Component {
     if (this.state.newMA == this.state.mailingAddress) {
     } else {
       userService.editContactInfo(
-        ID,
-        TOKEN,
+        this.ID,
+        this.TOKEN,
         "address",
         this.state.newMA,
         "mailing"
@@ -362,8 +364,8 @@ class EditContact extends React.Component {
     if (this.state.newOA == this.state.otherAddress) {
     } else {
       userService.editContactInfo(
-        ID,
-        TOKEN,
+        this.ID,
+        this.TOKEN,
         "address",
         this.state.newOA,
         "other"
@@ -374,13 +376,25 @@ class EditContact extends React.Component {
     //cell phone
     if (this.state.newCP == this.state.cellPhone) {
     } else {
-      userService.editContactInfo(ID, TOKEN, "phone", this.state.newCP, "cell");
+      userService.editContactInfo(
+        this.ID,
+        this.TOKEN,
+        "phone",
+        this.state.newCP,
+        "cell"
+      );
       this.setState({ cellPhone: this.state.newCP });
     }
     //home phone
     if (this.state.newHP == this.state.homePhone) {
     } else {
-      userService.editContactInfo(ID, TOKEN, "phone", this.state.newHP, "home");
+      userService.editContactInfo(
+        this.ID,
+        this.TOKEN,
+        "phone",
+        this.state.newHP,
+        "home"
+      );
       this.setState({ homePhone: this.state.newHP });
     }
 
@@ -388,8 +402,8 @@ class EditContact extends React.Component {
     if (this.state.newEmail == this.state.emailInfo) {
     } else {
       userService.editContactInfo(
-        ID,
-        TOKEN,
+        this.ID,
+        this.TOKEN,
         "email",
         this.state.newEmail,
         "main"
@@ -462,7 +476,7 @@ class EditContact extends React.Component {
             <p>
               <strong>Mailing Address: </strong>
 
-              {addressInfo.map((a, index) => (
+              {addressInfo.map(a => (
                 <div class="inline">
                   {a.type == "mailing" ? <div>{a.address}</div> : <div />}
                 </div>
@@ -545,7 +559,6 @@ class EditContact extends React.Component {
               </p>
               <p>
                 <strong>Cell Phone: </strong>
-
                 <div>
                   <ReactPhoneInput
                     placeholder="Enter phone number"

@@ -13,6 +13,7 @@
     "react-dom": "^16.8.6",
     "react-event-timeline": "^1.6.3",
     "react-google-autocomplete": "^1.1.0",
+    "react-google-login": "^5.0.4",
     "react-phone-input-2": "^2.9.4",
     "react-router": "^5.0.0",
     "react-router-dom": "^5.0.0",

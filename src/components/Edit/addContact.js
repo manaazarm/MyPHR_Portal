@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import "../App.css";
-import { userService } from "../service";
+import "../../App.css";
+import { userService } from "../../service";
 import { ButtonToolbar, Button } from "react-bootstrap";
 
 /*edit components */

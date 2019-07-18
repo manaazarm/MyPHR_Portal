@@ -1,10 +1,9 @@
 import React, { Component } from "react";
-import "../App.css";
-import { userService } from "../service";
+import "../../App.css";
+import { userService } from "../../service";
 import { ButtonToolbar, Button } from "react-bootstrap";
 
 console.log(JSON.parse(localStorage.getItem("oneUser")));
-const TOKEN = JSON.parse(localStorage.getItem("oneUser")).token;
 
 /* components */
 class BasicInfo extends React.Component {
@@ -62,6 +61,7 @@ class BasicInfo extends React.Component {
       newLanguage: event.target.value
     });
   }
+  TOKEN = JSON.parse(localStorage.getItem("oneUser")).token;
   handleSubmit(event) {
     event.preventDefault();
     this.setState({
@@ -69,7 +69,7 @@ class BasicInfo extends React.Component {
     });
     userService.updateLanguage(
       this.state.basic.client_id,
-      TOKEN,
+      this.TOKEN,
       this.state.newLanguage
     );
   }

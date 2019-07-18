@@ -1,13 +1,22 @@
 import React, { Component } from "react";
-import "../App.css";
-import { userService } from "../service";
+import "../../App.css";
+import { userService } from "../../service";
 import { ButtonToolbar, Button } from "react-bootstrap";
 import Select from "react-select";
 
 //TO DO: After Save!!!!
-const TOKEN = JSON.parse(localStorage.getItem("oneUser")).token;
-const ID = JSON.parse(localStorage.getItem("oneUser")).client_id;
-const optionsDiet = ["vegan", "New", "Healthy", "Vegetarian"];
+
+const optionsDiet = [
+  "vegan",
+  "Atkins",
+  "Zone",
+  "Ketogenic",
+  "Weight Watchers",
+  "South Beach",
+  "Raw food",
+  "Healthy",
+  "Vegetarian"
+];
 const optionsAD = ["DNR", " N", "1", "2", "3"];
 /*edit components */
 class EditProfile extends React.Component {
@@ -92,6 +101,8 @@ class EditProfile extends React.Component {
       this.setState({ newAdvanceDirective: newAdvanceDirective });
     }
   };
+  TOKEN = JSON.parse(localStorage.getItem("oneUser")).token;
+  ID = JSON.parse(localStorage.getItem("oneUser")).client_id;
   handleSubmit(event) {
     event.preventDefault();
     alert(
@@ -104,15 +115,15 @@ class EditProfile extends React.Component {
 
     //TO DO: || or &&
     if (this.state.newDiet.value != null && this.state.newDiet.value != "") {
-      userService.addDiet(ID, TOKEN, this.state.newDiet.value);
+      userService.addDiet(this.ID, this.TOKEN, this.state.newDiet.value);
     }
     if (
       this.state.newAdvanceDirective.value != null &&
       this.state.newAdvanceDirective.value != ""
     ) {
       userService.addAdvanceDirective(
-        ID,
-        TOKEN,
+        this.ID,
+        this.TOKEN,
         this.state.newAdvanceDirective.value
       );
     }
@@ -201,7 +212,14 @@ class EditProfile extends React.Component {
             <div>
               {healthProfile.map(h => (
                 <div>
-                  {h.type == "Health Risk" ? <div> >> {h.name}</div> : <div />}
+                  {h.type == "Health Risk" ? (
+                    <div>
+                      {" "}
+                      <ul>>> {h.name}</ul>
+                    </div>
+                  ) : (
+                    <div />
+                  )}
                 </div>
               ))}
             </div>
@@ -287,7 +305,13 @@ class EditProfile extends React.Component {
             <div>
               {healthProfile.map(h => (
                 <div>
-                  {h.type == "Health Risk" ? <div> >> {h.name}</div> : <div />}
+                  {h.type == "Health Risk" ? (
+                    <div>
+                      <ul>>> {h.name}</ul>{" "}
+                    </div>
+                  ) : (
+                    <div />
+                  )}
                 </div>
               ))}
             </div>

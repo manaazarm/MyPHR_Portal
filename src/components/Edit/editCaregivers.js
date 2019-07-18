@@ -1,13 +1,14 @@
 import React, { Component } from "react";
-import "../App.css";
-import { userService } from "../service";
+import "../../App.css";
+import { userService } from "../../service";
 import { ButtonToolbar, Button } from "react-bootstrap";
 import AddContact from "./addContact";
+import CaregiverContact from "./caregiverContact";
+import EditCaregiverContact from "./editCaregiverContact";
 
 //TO DO: After Save!!!!
 /*edit components */
-const TOKEN = JSON.parse(localStorage.getItem("oneUser")).token;
-const ID = JSON.parse(localStorage.getItem("oneUser")).client_id;
+
 class EditCaregivers extends React.Component {
   constructor(props, context) {
     super(props, context);
@@ -27,7 +28,13 @@ class EditCaregivers extends React.Component {
       secondName: [],
       secondRelationship: [],
       newSPN: "",
-      newSPR: ""
+      newSPR: "",
+
+      //break caregivers' contact info down to address, phone and email
+
+      caregiverAddresses: [],
+      caregiverPhones: [],
+      caregiverEmails: []
     };
     this.editCancel = this.editCancel.bind(this);
     this.editCaregivers = this.editCaregivers.bind(this);
@@ -38,6 +45,32 @@ class EditCaregivers extends React.Component {
   }
 
   componentDidMount() {
+    var addresses = [];
+    var phones = [];
+    var emails = [];
+    //get caregivers' contact info
+    for (let i = 0; i < this.state.caregiver.length; i++) {
+      userService
+        .getCaregiverContactInfo(
+          JSON.parse(localStorage.getItem("oneUser")).client_id,
+          JSON.parse(localStorage.getItem("oneUser")).token,
+          1,
+          this.state.caregiver[i].client_id
+        )
+
+        .then(data => {
+          addresses[i] = data[0][1];
+          phones[i] = data[1][1];
+          emails[i] = data[2][1];
+        });
+    }
+
+    this.setState({
+      caregiverAddresses: addresses,
+      caregiverPhones: phones,
+      caregiverEmails: emails
+    });
+
     //get name and relationship without mapping in render and set state
 
     //primary contact
@@ -92,6 +125,8 @@ class EditCaregivers extends React.Component {
   handleChange2(event) {
     this.setState({ [event.target.name]: event.target.value });
   }
+  TOKEN = JSON.parse(localStorage.getItem("oneUser")).token;
+  ID = JSON.parse(localStorage.getItem("oneUser")).client_id;
   handleSubmit(event) {
     event.preventDefault();
     //primary
@@ -101,8 +136,8 @@ class EditCaregivers extends React.Component {
     ) {
     } else {
       userService.editCaregivers(
-        ID,
-        TOKEN,
+        this.ID,
+        this.TOKEN,
         this.state.newPN,
         this.state.newPR,
         true
@@ -115,8 +150,8 @@ class EditCaregivers extends React.Component {
     ) {
     } else {
       userService.editCaregivers(
-        ID,
-        TOKEN,
+        this.ID,
+        this.TOKEN,
         this.state.newSPN,
         this.state.newSPR,
         false
@@ -131,11 +166,16 @@ class EditCaregivers extends React.Component {
       primaryName,
       primaryRelationship,
       secondName,
-      secondRelationship
+      secondRelationship,
+      caregiverAddresses,
+      caregiverPhones,
+      caregiverEmails
     } = this.state;
     console.log("not changable:" + secondName + secondRelationship);
+    console.log("idsssss:" + JSON.stringify(caregiverPhones));
     return (
       <div>
+        {this.videoUrls}
         {!isEditCaregivers ? (
           <div>
             {caregiver.map((careg, index) => (
@@ -150,22 +190,11 @@ class EditCaregivers extends React.Component {
                         <strong>Name: </strong>
                         {careg.name}
                       </li>
+
                       <li>
                         <strong> Relationship:</strong> {careg.relationship}
                       </li>
-                      <li>
-                        <strong> Home Address:</strong>{" "}
-                      </li>
-                      <li>
-                        <strong> Mailing Address:</strong>{" "}
-                      </li>
-                      <li>
-                        <strong> Cell Phone:</strong>{" "}
-                      </li>
-                      <li>
-                        <strong> Home Phone:</strong>{" "}
-                      </li>
-                      <strong> Email:</strong>{" "}
+                      <CaregiverContact id={careg.client_id} />
                     </ul>
                   </div>
                 ) : (
@@ -182,21 +211,7 @@ class EditCaregivers extends React.Component {
                       <li>
                         <strong> Relationship:</strong> {careg.relationship}{" "}
                       </li>
-                      <li>
-                        <strong> Home Address:</strong>{" "}
-                      </li>
-                      <li>
-                        <strong> Mailing Address:</strong>{" "}
-                      </li>
-                      <li>
-                        <strong> Cell Phone:</strong>{" "}
-                      </li>
-                      <li>
-                        <strong> Home Phone:</strong>{" "}
-                      </li>
-                      <li>
-                        <strong> Email:</strong>{" "}
-                      </li>
+                      <CaregiverContact id={careg.client_id} />
                     </ul>
                   </div>
                 )}
@@ -235,19 +250,7 @@ class EditCaregivers extends React.Component {
                           <option value="mother">mother</option>
                         </select>
                       </li>
-                      <li>
-                        <strong> Home Address:</strong>{" "}
-                      </li>
-                      <li>
-                        <strong> Mailing Address:</strong>{" "}
-                      </li>
-                      <li>
-                        <strong> Cell Phone:</strong>{" "}
-                      </li>
-                      <li>
-                        <strong> Home Phone:</strong>{" "}
-                      </li>
-                      <strong> Email:</strong>{" "}
+                      <EditCaregiverContact is_primary={careg.is_primary} />
                     </ul>
                   </div>
                 ) : (
@@ -277,21 +280,7 @@ class EditCaregivers extends React.Component {
                           <option value="aunt">aunt</option>
                         </select>
                       </li>
-                      <li>
-                        <strong> Home Address:</strong>{" "}
-                      </li>
-                      <li>
-                        <strong> Mailing Address:</strong>{" "}
-                      </li>
-                      <li>
-                        <strong> Cell Phone:</strong>{" "}
-                      </li>
-                      <li>
-                        <strong> Home Phone:</strong>{" "}
-                      </li>
-                      <li>
-                        <strong> Email:</strong>{" "}
-                      </li>
+                      <EditCaregiverContact is_primary={careg.is_primary} />
                     </ul>
                   </div>
                 )}

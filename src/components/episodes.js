@@ -1,12 +1,12 @@
 import React, { Component, Fragment } from "react";
-import "./App.css";
+import "../App.css";
 import {
   VerticalTimeline,
   VerticalTimelineElement
 } from "react-vertical-timeline-component";
 import "react-vertical-timeline-component/style.min.css";
 import Scroll from "react-scroll";
-import { userService } from "./service";
+import { userService } from "../service";
 
 var Element = Scroll.Element;
 var Events = Scroll.Events;

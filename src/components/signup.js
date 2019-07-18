@@ -1,8 +1,10 @@
 import React from "react";
-import "./App.css";
-import { userService } from "./service";
+import "../App.css";
+import { userService } from "../service";
+import { GoogleLogin } from "react-google-login";
+import OAuth from "./googleLogin";
 
-class LoginForm extends React.Component {
+class Signup extends React.Component {
   // Using a class based component here because we're accessing DOM refs
   constructor(props) {
     super(props);
@@ -10,6 +12,7 @@ class LoginForm extends React.Component {
     this.state = {
       username: "",
       password: "",
+
       submitted: false,
       loading: false,
       error: ""
@@ -17,6 +20,7 @@ class LoginForm extends React.Component {
     this.handleSignIn = this.handleSignIn.bind(this);
     this.handleChange = this.handleChange.bind(this);
   }
+
   handleChange(e) {
     const { name, value } = e.target;
     this.setState({ [name]: value });
@@ -24,7 +28,7 @@ class LoginForm extends React.Component {
   handleSignIn(e) {
     e.preventDefault();
     this.setState({ submitted: true });
-    const { username, password, returnUrl } = this.state;
+    const { username, password } = this.state;
 
     // stop here if form is invalid
     if (!(username && password)) {
@@ -33,7 +37,7 @@ class LoginForm extends React.Component {
 
     //this.setState({ loading: true });
 
-    userService.newLogin(username, password).then(
+    userService.login(username, password).then(
       user => {
         const { from } = this.props.location.state || {
           from: { pathname: "/" }
@@ -42,7 +46,6 @@ class LoginForm extends React.Component {
       },
       error => this.setState({ error, loading: false })
     );
-    this.props.history.push("/");
   }
 
   render() {
@@ -50,7 +53,7 @@ class LoginForm extends React.Component {
     return (
       <div className="loginPage">
         <form onSubmit={this.handleSignIn}>
-          <h3 style={{ textAlign: "center" }}>Sign in</h3>
+          <h3 style={{ textAlign: "center" }}>Sign up</h3>
           <div
             className={
               "form-group" + (submitted && !username ? " has-error" : "")
@@ -85,26 +88,16 @@ class LoginForm extends React.Component {
               <div className="help-block">Password is required</div>
             )}
           </div>
-          <p style={{ textAlign: "center" }}>
-            <button disabled>Send Authentication Code</button>
-          </p>
-          <p style={{ textAlign: "center" }}>
-            <button disabled>Answer Security Questions</button>
-          </p>
-          <p style={{ textDecoration: "underline" }}>
-            Forgot your username or password?
-          </p>
+
           <div className="form-group">
             <button className="btn btn-primary" disabled={loading}>
-              Login
+              Sign Up
             </button>
             {loading && (
               <img src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
             )}
           </div>
-          <p style={{ textAlign: "center", textDecoration: "underline" }}>
-            Sign Up
-          </p>
+
           {error && <div className={"alert alert-danger"}>{error}</div>}
         </form>
       </div>
@@ -112,4 +105,4 @@ class LoginForm extends React.Component {
   }
 }
 
-export default LoginForm;
+export default Signup;
