@@ -24,7 +24,9 @@ export const userService = {
   addAdvanceDirective,
   editContactInfo,
   editCaregivers,
-  editCaregiverContacts
+  editCaregiverContacts,
+
+  getAlerts
 };
 
 //for fake api, responsing to backend.js
@@ -250,15 +252,32 @@ function getCaregiverContactInfo(
         // store user details and basic auth credentials in local storage
         // to keep user logged in between page refreshes
         localStorage.setItem(
-          "caregiverContactInfo",
+          "caregiverContactInfo" + client_id,
           JSON.stringify(caregiverContactInfo)
         );
         console.log(
-          "caregiverContactInfo:" + localStorage.getItem("caregiverContactInfo")
+          "caregiverContactInfo:" +
+            localStorage.getItem("caregiverContactInfo" + client_id)
         );
       }
       return caregiverContactInfo;
     });
+}
+function getAlerts() {
+  localStorage.removeItem("alerts");
+  return (
+    fetch(`http://www.mocky.io/v2/5d1a60c62f00000e00fd7624`)
+      // We get the API response and receive data in JSON format...
+      .then(response => response.json())
+      // ...then we locally store data
+      .then(alerts => {
+        localStorage.setItem("alerts", JSON.stringify(alerts));
+
+        const ale = localStorage.getItem("alerts");
+        console.log("print alerts:" + alerts);
+        return ale;
+      })
+  );
 }
 
 function logout() {

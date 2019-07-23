@@ -39,6 +39,7 @@ class EditContact extends React.Component {
     this.handleOAChange = this.handleOAChange.bind(this);
     this.handleMAChange = this.handleMAChange.bind(this);
     this.handleHPChange = this.handleHPChange.bind(this);
+    this.handleHAChange = this.handleHAChange.bind(this);
 
     this.handleEChange = this.handleEChange.bind(this);
   }
@@ -74,6 +75,7 @@ class EditContact extends React.Component {
       newEmail: {},
 
       //new input values:
+      newHA: {},
       newMA: {},
       newOA: {},
       newHP: {},
@@ -84,7 +86,11 @@ class EditContact extends React.Component {
   }
   componentDidMount() {
     const ha = this.state.addressInfo.filter(word => word.type == "home");
-    this.setState({ homeAddress: ha[0].address });
+    if (ha.length != 0) {
+      this.setState({ homeAddress: ha[0].address, newHA: ha[0].address });
+    } else {
+      this.setState({ homeAddress: ha[0], newHA: ha[0] });
+    }
 
     const ma = this.state.addressInfo.filter(word => word.type == "mailing");
     if (ma.length != 0) {
@@ -219,6 +225,9 @@ class EditContact extends React.Component {
     });
   }
   //handle addresses change
+  handleHAChange(event) {
+    this.setState({ newHA: event.target.value });
+  }
   handleMAChange(event) {
     this.setState({ newMA: event.target.value });
   }
@@ -347,6 +356,18 @@ class EditContact extends React.Component {
     if (!this.handleValidation()) {
     }
     //call edit apis:
+    if (this.state.newHA == this.state.homeAddress) {
+    } else {
+      userService.editContactInfo(
+        this.ID,
+        this.TOKEN,
+        "address",
+        this.state.newHA,
+        "home"
+      );
+      this.setState({ homeAddress: this.state.newHA });
+    }
+
     //mailing address
     if (this.state.newMA == this.state.mailingAddress) {
     } else {
@@ -452,6 +473,7 @@ class EditContact extends React.Component {
       homePhone,
 
       data,
+      newHA,
       newMA,
       newOA,
       newCP,
@@ -520,7 +542,15 @@ class EditContact extends React.Component {
           <div>
             <form onSubmit={this.handleSubmit}>
               <p>
-                <strong>Home Address:</strong>
+                <strong>Home Address:</strong>{" "}
+                <input
+                  class="form-control"
+                  placeholder="home address"
+                  value={newHA || ""}
+                  onChange={this.handleHAChange}
+                />
+                {/**
+
                 <AddressSuggest
                   query={this.state.query}
                   value={address.street_number}
@@ -530,8 +560,7 @@ class EditContact extends React.Component {
                 <input placeholder="city" value={address.city} /> ,{" "}
                 <input placeholder="country" value={address.country} />,{" "}
                 <input placeholder="postal code" value={address.postalCode} />
-                {/**
-
+                
           <AddressInput
             street={this.state.address.street}
             city={this.state.address.city}
@@ -540,14 +569,14 @@ class EditContact extends React.Component {
             country={this.state.address.country}
             onChange={this.onAddressChange}
           />
- */}
-                <br />
-                {result}
+           <br />
+                {result}*/}
               </p>
 
               <p>
                 <strong>Mailing Address: </strong>
                 <input
+                  class="form-control"
                   placeholder="mailing address"
                   value={newMA || ""}
                   onChange={this.handleMAChange}
@@ -555,7 +584,12 @@ class EditContact extends React.Component {
               </p>
               <p>
                 <strong>Other Address: </strong>{" "}
-                <input value={newOA || ""} onChange={this.handleOAChange} />
+                <input
+                  class="form-control"
+                  placeholder="other address"
+                  value={newOA || ""}
+                  onChange={this.handleOAChange}
+                />
               </p>
               <p>
                 <strong>Cell Phone: </strong>
@@ -584,16 +618,8 @@ class EditContact extends React.Component {
               <p>
                 <p>
                   <strong>Email:</strong>{" "}
-                  <Field
-                    validator="isEmail"
-                    required
-                    name="email"
-                    placeholder="Email"
-                    onChange={this.handleChange}
-                    value={this.state.data.email}
-                    shouldValidateInputs={this.state.shouldValidateInputs}
-                  />
                   <input
+                    class="form-control"
                     type="email"
                     value={newEmail}
                     onChange={this.handleEChange}

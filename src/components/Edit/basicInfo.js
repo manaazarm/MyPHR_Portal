@@ -1,15 +1,17 @@
-import React, { Component } from "react";
+import React from "react";
 import "../../App.css";
 import { userService } from "../../service";
 import { ButtonToolbar, Button } from "react-bootstrap";
 
-console.log(JSON.parse(localStorage.getItem("oneUser")));
-
-/* components */
+/* component */
+// With edit page that allows service lanuage changle
 class BasicInfo extends React.Component {
   constructor(props, context) {
     super(props, context);
+
     const clientToEdit = JSON.parse(localStorage.getItem("basicInfo"));
+    const caregiverToEdit = JSON.parse(localStorage.getItem("caregiver"));
+
     this.state = {
       basic: {
         client_id: clientToEdit.client_id,
@@ -23,11 +25,12 @@ class BasicInfo extends React.Component {
         name: clientToEdit.name,
         start_date: clientToEdit.start_date
       },
-      isEditBasic: false, ///remove from state
-      newLanguage: clientToEdit.service_language
+      isEditBasic: false,
+      newLanguage: clientToEdit.service_language,
+      caregiver: caregiverToEdit,
+      caregiverPID: ""
     };
 
-    //TO BE FIXED: cancel has problem!!!
     this.editCancel = this.editCancel.bind(this);
     this.editBasic = this.editBasic.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -35,10 +38,33 @@ class BasicInfo extends React.Component {
   }
 
   componentDidMount() {
+    //primary caregiver
+    const result = this.state.caregiver.filter(word => word.is_primary == true);
+    var d = [];
+    for (let i = 0; i < result.length; i++) {
+      d.push(result[i].client_id);
+    }
+
     this.setState({
-      //client: JSON.parse(localStorage.getItem("client")),
-      //language: JSON.parse(localStorage.getItem("client")).service_language
+      caregiverPID: d
     });
+
+    //save primary caregiver in local storage
+    userService
+      .getCaregiverContactInfo(
+        JSON.parse(localStorage.getItem("oneUser")).client_id,
+        JSON.parse(localStorage.getItem("oneUser")).token,
+        1,
+        this.state.caregiverPID
+      )
+
+      .then(data => {
+        this.setState({
+          caregiverAddresses: data[0][1],
+          caregiverPhones: data[1][1],
+          caregiverEmails: data[2][1]
+        });
+      });
   }
   editBasic() {
     this.setState({
@@ -141,7 +167,11 @@ class BasicInfo extends React.Component {
               <strong>Last Access:</strong> {last_access_date}
             </p>
             <ButtonToolbar>
-              <Button variant="secondary" onClick={this.handleSubmit}>
+              <Button
+                style={{ right: 20 }}
+                variant="secondary"
+                onClick={this.handleSubmit}
+              >
                 Save
               </Button>
               <Button variant="secondary" onClick={this.editCancel}>

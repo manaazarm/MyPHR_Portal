@@ -17,7 +17,7 @@ const optionsDiet = [
   "Healthy",
   "Vegetarian"
 ];
-const optionsAD = ["DNR", " N", "1", "2", "3"];
+const optionsAD = ["DNR", " Living Will"];
 /*edit components */
 class EditProfile extends React.Component {
   constructor(props, context) {

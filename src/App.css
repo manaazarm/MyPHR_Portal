@@ -138,14 +138,14 @@ ul {
 }
 /** tab content area **/
 .tab-content {
-  background-color: #d8fbff;
+  background-color: white;
   color: black;
   width: 105%;
   height: 650px;
   text-align: left;
   padding: 50px 50px;
   margin-left: -30px;
-  border: 2px solid #d8fbff;
+  border: 2px solid white;
   border-radius: 0 20px 20px 20px;
   padding-bottom: 0px;
 }
@@ -157,7 +157,7 @@ ul {
   background-color: grey;
 }
 .flex-column .nav-item :global(.active) {
-  background-color: #d8fbff;
+  background-color: white;
   color: black;
   border-radius: 20px 0 0 20px;
 }
