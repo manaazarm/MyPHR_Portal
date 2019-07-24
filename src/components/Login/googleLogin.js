@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { GoogleLogin } from "react-google-login";
 import { userService } from "../../service";
-import Signup from "./signup";
 import Home from "../home";
 
 const GOOGLE_CLIENT_ID =
@@ -36,7 +35,6 @@ class OAuth extends Component {
         token: response.access_token
       }
     });
-    return <Signup />;
   };
 
   render() {
