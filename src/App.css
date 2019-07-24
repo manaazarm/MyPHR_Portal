@@ -137,6 +137,8 @@ ul {
   height: 500px;
 }
 /** tab content area **/
+
+/**TO DO ------Change to relative */
 .tab-content {
   background-color: white;
   color: black;
@@ -157,7 +159,7 @@ ul {
   background-color: grey;
 }
 .flex-column .nav-item :global(.active) {
-  background-color: white;
+  background-color: #dce5f2;
   color: black;
   border-radius: 20px 0 0 20px;
 }
@@ -185,7 +187,24 @@ ul {
 /**login in page**/
 .loginPage {
   text-align: center;
-  margin-top: 250px;
+
+  background-image: url(./images/LoginPage.jpg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100%;
+}
+
+.tab-content {
+  background-image: url(./images/leaf.jpg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100%;
+}
+.appName {
+  font-size: 30px;
+  text-align: right;
 }
 form {
   /**
@@ -193,6 +212,8 @@ form {
   
   border: 1px solid black;
   **/
+  margin-top: 17%;
+  margin-bottom: 13%;
   display: inline-block;
 }
 input[type="submit"] {

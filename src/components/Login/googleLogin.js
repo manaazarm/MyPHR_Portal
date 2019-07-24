@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { GoogleLogin } from "react-google-login";
-import { userService } from "../service";
+import { userService } from "../../service";
 import Signup from "./signup";
-import Home from "./home";
+import Home from "../home";
 
 const GOOGLE_CLIENT_ID =
   "815948051102-phukld82ajlo50r9i5kue5arhmp4hclr.apps.googleusercontent.com";

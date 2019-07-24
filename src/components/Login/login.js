@@ -1,6 +1,6 @@
 import React from "react";
-import "../App.css";
-import { userService } from "../service";
+import "../../App.css";
+import { userService } from "../../service";
 import OAuth from "./googleLogin";
 import { withStyles } from "material-ui";
 
@@ -61,7 +61,8 @@ class LoginForm extends React.Component {
     const { username, password, submitted, loading, error } = this.state;
     return (
       <div className="loginPage">
-        <form onSubmit={this.handleSignIn}>
+        <div class="appName">MyPHR</div>
+        <form class="loginForm" onSubmit={this.handleSignIn}>
           <h3 style={{ textAlign: "center" }}>Sign in</h3>
           <div
             className={

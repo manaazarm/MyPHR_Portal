@@ -1,6 +1,6 @@
 import React from "react";
-import "../App.css";
-import { userService } from "../service";
+import "../../App.css";
+import { userService } from "../../service";
 import { GoogleLogin } from "react-google-login";
 import OAuth from "./googleLogin";
 

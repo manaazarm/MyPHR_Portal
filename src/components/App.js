@@ -1,5 +1,25 @@
 import React, { Component } from "react";
 import "../App.css";
+import Gallery from "react-grid-gallery";
+//import HeartRates from "./images/HeartRates.jpg";
+
+const IMAGES = [
+  {
+    src: {},
+    thumbnail: {},
+    thumbnailWidth: 320,
+    thumbnailHeight: 174,
+    caption: "Heart Rates"
+  },
+
+  {
+    src: "./images/StepsGraph.jpg",
+    thumbnail: "./images/StepsGraph.jpg",
+    thumbnailWidth: 320,
+    thumbnailHeight: 212,
+    caption: "Steps"
+  }
+];
 
 /*home page */
 class App extends React.Component {
@@ -34,6 +54,7 @@ class App extends React.Component {
     return (
       <div>
         <h1>Today's Activities</h1>
+        <Gallery images={IMAGES} />
       </div>
     );
   }

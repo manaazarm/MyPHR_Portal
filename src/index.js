@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import "./App.css";
-import LoginForm from "./components/login.js";
+import LoginForm from "./components/Login/login.js";
 import * as serviceWorker from "./serviceWorker";
 import Home from "./components/home";
 import App from "./components/App";
