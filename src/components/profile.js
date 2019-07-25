@@ -12,102 +12,22 @@ import EditCaregivers from "./Edit/editCaregivers";
 class Profile extends React.Component {
   constructor(props, context) {
     super(props, context);
+
+    const clientToEdit = JSON.parse(localStorage.getItem("physician"));
     this.state = {
-      user: {},
-      address: {},
-      c: {},
-      caregiver: [],
-      isLoading: true,
-      healthProfile: [],
-      client: {},
-      basicInfo: {},
-      addressInfo: [],
-      physician: [],
-      phoneInfo: [],
-      emailInfo: [],
-      caregiver_client_id: []
+      physician: clientToEdit
     };
-  }
-
-  componentDidMount() {
-    this.setState({
-      user: JSON.parse(localStorage.getItem("oneUser"))
-      //basicInfo: JSON.parse(localStorage.getItem("basicInfo"))
-    });
-
-    userService
-      .getCaregivers(JSON.parse(localStorage.getItem("oneUser")).client_id)
-      .then(data =>
-        this.setState({
-          c: JSON.parse(data)
-        })
-      );
-
-    /***
-     * real api calls
-     * contactInfo JSON format has error when printing
-     */
-
-    userService
-      .getBasicInfo(
-        JSON.parse(localStorage.getItem("oneUser")).client_id,
-        JSON.parse(localStorage.getItem("oneUser")).user_id,
-        JSON.parse(localStorage.getItem("oneUser")).token
-      )
-      .then(data => this.setState({ basicInfo: data }));
-    userService
-      .getHealthProfile(
-        JSON.parse(localStorage.getItem("oneUser")).client_id,
-        JSON.parse(localStorage.getItem("oneUser")).token
-      )
-      .then(data => this.setState({ healthProfile: data }));
-
-    userService
-      .getContactInfo(
-        JSON.parse(localStorage.getItem("oneUser")).client_id,
-        1,
-        JSON.parse(localStorage.getItem("oneUser")).token
-      )
-      .then(data =>
-        this.setState({
-          addressInfo: data[0][1],
-          phoneInfo: data[1][1],
-          emailInfo: data[2][1]
-        })
-      );
-
-    userService
-      .getCaregiver(
-        JSON.parse(localStorage.getItem("oneUser")).client_id,
-        JSON.parse(localStorage.getItem("oneUser")).token,
-        1
-      )
-      .then(data => this.setState({ caregiver: data }));
-
-    userService
-      .getPhysician(
-        JSON.parse(localStorage.getItem("oneUser")).client_id,
-        JSON.parse(localStorage.getItem("oneUser")).token,
-        1
-      )
-      .then(data =>
-        this.setState({
-          physician: data[0]
-        })
-      );
-
-    //user from real api
-    console.log("user:" + localStorage.getItem("oneUser"));
-    console.log("basic info:" + localStorage.getItem("basicInfo"));
-    console.log("physician:" + localStorage.getItem("physician"));
-    localStorage.setItem("addressInfo", this.state.addressInfo);
   }
 
   render() {
     const { physician } = this.state;
 
     return (
-      <TabContainer id="left-tabs-example" defaultActiveKey="first">
+      <TabContainer
+        id="left-tabs-example"
+        className="tab-container"
+        defaultActiveKey="first"
+      >
         <Row>
           <Col sm={3}>
             <Nav className="flex-column">
@@ -194,37 +114,25 @@ class Profile extends React.Component {
               </TabPane>
               <TabPane eventKey="fifth">
                 <div>
-                  <div>
-                    <p>
-                      <strong>Family Physicians</strong>{" "}
-                    </p>
-                    <ul>
-                      <li>
-                        <strong> Name:</strong> {physician.physician_name}
-                      </li>
-                      <li>
-                        <strong> Address:</strong>{" "}
-                      </li>
-                      <li>
-                        <strong> Phone:</strong>{" "}
-                      </li>
-                    </ul>
-                    <p />
-                    <p>
-                      <strong>Neurologist:</strong>{" "}
-                    </p>
-                    <ul>
-                      <li>
-                        <strong> Name:</strong>{" "}
-                      </li>
-                      <li>
-                        <strong> Address:</strong>{" "}
-                      </li>
-                      <li>
-                        <strong> Phone:</strong>{" "}
-                      </li>
-                    </ul>
-                  </div>
+                  {physician.map(p => (
+                    <div class="inline">
+                      <p>
+                        <strong>From {p.Healthcare_provider_name}: </strong>{" "}
+                      </p>
+                      <ul>
+                        <li>
+                          <strong> Name:</strong> {p.physician_name}
+                        </li>
+                        <li>
+                          <strong> Address:</strong> {p.address}
+                        </li>
+                        <li>
+                          <strong> Phone:</strong> {p.number}
+                        </li>
+                      </ul>
+                      <p />
+                    </div>
+                  ))}
                 </div>
               </TabPane>
             </TabContent>

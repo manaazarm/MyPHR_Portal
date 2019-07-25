@@ -1,6 +1,8 @@
 import config from "config";
 import { authHeader } from "./backend";
 
+const api_url = "https://myphr-api.firebaseapp.com";
+
 export const userService = {
   login, //fake
   newLogin, //real
@@ -8,10 +10,6 @@ export const userService = {
   getContactInfo, //real
   logout,
   getCaregiver, //real
-  getClient, //fake
-  getAll,
-  getAddress, //fake
-  getCaregivers, //fake
 
   getEpisodes,
   getHealthProfile, //real
@@ -25,7 +23,6 @@ export const userService = {
   editContactInfo,
   editCaregivers,
   editCaregiverContacts,
-
   getAlerts
 };
 
@@ -59,9 +56,7 @@ function newLogin(username, password) {
   //each time fresh local storage
   localStorage.removeItem("oneUser");
 
-  return fetch(
-    `http://localhost:5000/login?username=${username}&password=${password}`
-  )
+  return fetch(`${api_url}/login?username=${username}&password=${password}`)
     .then(handleResponse)
     .then(user => {
       // login successful if there's a user in the response
@@ -76,63 +71,12 @@ function newLogin(username, password) {
     });
 }
 
-function getClient(client_id) {
-  localStorage.removeItem("client");
-  return (
-    fetch(`https://5cdc6232069eb30014202d8e.mockapi.io/profile/${client_id}`) //must have a place to put userId
-      // We get the API response and receive data in JSON format...
-      .then(response => response.json())
-      // ...then we update the users state
-      .then(client => {
-        localStorage.setItem("client", JSON.stringify(client));
-        console.log("llll:" + localStorage.getItem("client"));
-        const cli = localStorage.getItem("client");
-
-        return cli;
-      })
-  );
-}
-function getAddress(id) {
-  return (
-    fetch(`https://5cdc6232069eb30014202d8e.mockapi.io/addresses/${id}`) //must have a place to put userId
-      // We get the API response and receive data in JSON format...
-      .then(response => response.json())
-      // ...then we update the users state
-      .then(address => {
-        localStorage.setItem("address", JSON.stringify(address));
-
-        const c = localStorage.getItem("address");
-
-        return c;
-      })
-  );
-}
-//https://5cdc6232069eb30014202d8e.mockapi.io/addresses/${id}
-
-//how about two or more caregivers, is the client_id patient id?
-function getCaregivers(client_id) {
-  localStorage.removeItem("caregivers");
-  return (
-    fetch(`https://5cdc6232069eb30014202d8e.mockapi.io/caregivers/${client_id}`) //must have a place to put userId
-      // We get the API response and receive data in JSON format...
-      .then(response => response.json())
-      // ...then we update the users state
-      .then(caregivers => {
-        localStorage.setItem("caregivers", JSON.stringify(caregivers));
-
-        const c = localStorage.getItem("caregivers");
-        // console.log("print caregiver:" + c);
-        return c;
-      })
-  );
-}
-
 //response to real api
 function getHealthProfile(client_id, token) {
   localStorage.removeItem("healthProfile");
 
   return fetch(
-    `http://localhost:5000/health_profile?client_id=${client_id}&token=${token}`
+    `${api_url}/health_profile?client_id=${client_id}&token=${token}`
   )
     .then(handleResponse)
     .then(healthProfile => {
@@ -152,7 +96,7 @@ function getHealthProfile(client_id, token) {
 function getBasicInfo(client_id, user_id, token) {
   localStorage.removeItem("basicInfo");
   return fetch(
-    `http://localhost:5000/basic_info?client_id=${client_id}&user_id=${user_id}&token=${token}`
+    `${api_url}/basic_info?client_id=${client_id}&user_id=${user_id}&token=${token}`
   )
     .then(handleResponse)
     .then(basicInfo => {
@@ -187,7 +131,7 @@ function getContactInfo(client_id, is_active, token) {
 function getCaregiver(client_id, token, is_active) {
   localStorage.removeItem("caregiver");
   return fetch(
-    `http://localhost:5000/caregiver?client_id=${client_id}&token=${token}&is_active=${is_active}`
+    `${api_url}/caregiver?client_id=${client_id}&token=${token}&is_active=${is_active}`
   )
     .then(handleResponse)
     .then(caregiver => {
@@ -203,9 +147,7 @@ function getCaregiver(client_id, token, is_active) {
 }
 function getPhysician(client_id, token) {
   localStorage.removeItem("physician");
-  return fetch(
-    `http://localhost:5000/physician?client_id=${client_id}&token=${token}`
-  )
+  return fetch(`${api_url}/physician?client_id=${client_id}&token=${token}`)
     .then(handleResponse)
     .then(physician => {
       // login successful if there's a user in the response
@@ -221,7 +163,7 @@ function getPhysician(client_id, token) {
 function getEpisodes(client_id, token, is_active) {
   localStorage.removeItem("episodes");
   return fetch(
-    `http://localhost:5000/episodes?client_id=${client_id}&token=${token}&is_active=${is_active}`
+    `${api_url}/episodes?client_id=${client_id}&token=${token}&is_active=${is_active}`
   )
     .then(handleResponse)
     .then(episodes => {
@@ -243,7 +185,7 @@ function getCaregiverContactInfo(
 ) {
   localStorage.removeItem("caregiverContactInfo");
   return fetch(
-    `http://localhost:5000/caregiver_contact_info?client_id=${client_id}&token=${token}&is_active=${is_active}&caregiver_client_id=${caregiver_client_id}`
+    `${api_url}/caregiver_contact_info?client_id=${client_id}&token=${token}&is_active=${is_active}&caregiver_client_id=${caregiver_client_id}`
   )
     .then(handleResponse)
     .then(caregiverContactInfo => {
@@ -285,17 +227,9 @@ function logout() {
   //localStorage.removeItem("address");
 }
 
-function getAll() {
-  const requestOptions = {
-    method: "GET",
-    headers: authHeader()
-  };
-  return fetch(`${config.apiUrl}/users`, requestOptions).then(handleResponse);
-}
-
 function updateLanguage(client_id, token, service_language) {
   return fetch(
-    `http://localhost:5000/client/${client_id}/service_language?token=${token}&service_language=${service_language}`,
+    `${api_url}/client/${client_id}/service_language?token=${token}&service_language=${service_language}`,
     {
       method: "POST",
       //mode: "CORS",
@@ -312,7 +246,7 @@ function updateLanguage(client_id, token, service_language) {
 }
 function addDiet(client_id, token, diet) {
   return fetch(
-    `http://localhost:5000/client/${client_id}/add_diet?token=${token}&diet=${diet}`,
+    `${api_url}/client/${client_id}/add_diet?token=${token}&diet=${diet}`,
     {
       method: "POST",
       //mode: "CORS",
@@ -329,7 +263,7 @@ function addDiet(client_id, token, diet) {
 }
 function addAdvanceDirective(client_id, token, advance_directive) {
   return fetch(
-    `http://localhost:5000/client/${client_id}/add_advance_directive?token=${token}&advance_directive=${advance_directive}`,
+    `${api_url}/client/${client_id}/add_advance_directive?token=${token}&advance_directive=${advance_directive}`,
     {
       method: "POST",
       //mode: "CORS",
@@ -346,7 +280,7 @@ function addAdvanceDirective(client_id, token, advance_directive) {
 }
 function editContactInfo(client_id, token, category, text, type) {
   return fetch(
-    `http://localhost:5000/client/${client_id}/edit_contact_info?token=${token}&category=${category}&text=${text}&type=${type}`,
+    `${api_url}/client/${client_id}/edit_contact_info?token=${token}&category=${category}&text=${text}&type=${type}`,
     {
       method: "POST",
       //mode: "CORS",
@@ -363,7 +297,7 @@ function editContactInfo(client_id, token, category, text, type) {
 }
 function editCaregivers(client_id, token, name, relationship, is_primary) {
   return fetch(
-    `http://localhost:5000/client/${client_id}/edit_caregivers?token=${token}&name=${name}&relationship=${relationship}&is_primary=${is_primary}`,
+    `${api_url}/client/${client_id}/edit_caregivers?token=${token}&name=${name}&relationship=${relationship}&is_primary=${is_primary}`,
     {
       method: "POST",
       //mode: "CORS",
@@ -387,7 +321,7 @@ function editCaregiverContacts(
   is_primary
 ) {
   return fetch(
-    `http://localhost:5000/client/${client_id}/edit_caregiver_contacts?token=${token}&category=${category}&text=${text}&type=${type}&is_primary=${is_primary}`,
+    `${api_url}/client/${client_id}/edit_caregiver_contacts?token=${token}&category=${category}&text=${text}&type=${type}&is_primary=${is_primary}`,
     {
       method: "POST",
       //mode: "CORS",

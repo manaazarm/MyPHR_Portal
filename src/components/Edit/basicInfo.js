@@ -5,6 +5,7 @@ import { ButtonToolbar, Button } from "react-bootstrap";
 
 /* component */
 // With edit page that allows service lanuage changle
+
 class BasicInfo extends React.Component {
   constructor(props, context) {
     super(props, context);
@@ -108,6 +109,7 @@ class BasicInfo extends React.Component {
       last_access_date,
       service_language
     } = this.state.basic;
+
     return (
       <div>
         {!this.state.isEditBasic ? (
@@ -136,7 +138,11 @@ class BasicInfo extends React.Component {
               {last_access_date}
             </p>
 
-            <Button variant="secondary" onClick={this.editBasic}>
+            <Button
+              class="buttons"
+              variant="outline-primary"
+              onClick={this.editBasic}
+            >
               Edit
             </Button>
           </div>
@@ -167,14 +173,11 @@ class BasicInfo extends React.Component {
               <strong>Last Access:</strong> {last_access_date}
             </p>
             <ButtonToolbar>
-              <Button
-                style={{ right: 20 }}
-                variant="secondary"
-                onClick={this.handleSubmit}
-              >
+              <Button variant="outline-primary" onClick={this.handleSubmit}>
                 Save
               </Button>
-              <Button variant="secondary" onClick={this.editCancel}>
+              <br />
+              <Button variant="outline-primary" onClick={this.editCancel}>
                 Cancel
               </Button>
             </ButtonToolbar>

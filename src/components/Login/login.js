@@ -48,13 +48,13 @@ class LoginForm extends React.Component {
     userService.newLogin(username, password).then(
       user => {
         const { from } = this.props.location.state || {
-          from: { pathname: "/" }
+          from: { pathname: "/home" }
         };
         this.props.history.push(from);
       },
       error => this.setState({ error, loading: false })
     );
-    this.props.history.push("/");
+    this.props.history.push("/home");
   }
 
   render() {
@@ -102,8 +102,9 @@ class LoginForm extends React.Component {
           <p style={{ textDecoration: "underline" }}>
             Forgot your username or password?
           </p>
+
           <div className="form-group">
-            <button className="btn btn-primary" disabled={loading}>
+            <button className="login-button" disabled={loading}>
               Login
             </button>
             {loading && (

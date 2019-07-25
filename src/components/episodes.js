@@ -88,59 +88,61 @@ class Episodes extends React.Component {
       return <div>is loading...</div>;
     } else {
       return (
-        <Fragment className="timeline-space">
-          <Element
-            name="test7"
-            className="element"
-            id="containerElement"
-            style={{
-              position: "relative",
-              height: "600px",
-              overflow: "scroll",
-              marginBottom: "100px",
-              border: "0.1px solid grey"
-            }}
-          >
-            {episodes.map(item => (
-              <div>
-                <VerticalTimeline>
-                  <VerticalTimelineElement
-                    className="vertical-timeline-element--work"
-                    date={this.convert(item.start_date)}
-                    iconStyle={{
-                      background: "rgb(33, 150, 243)",
-                      color: "#fff"
-                    }}
-                    position={"left"}
-                  >
-                    <h5 className="vertical-timeline-element-title">
-                      {item.Healthcare_provider_name}
-                    </h5>
-                    <ul>
-                      <div>
-                        {item.is_active ? (
-                          <div>
-                            <li>{this.convertFull(item.start_date)}</li>
-                          </div>
-                        ) : (
-                          <div>
-                            <li>
-                              {this.convertFull(item.start_date)} to{" "}
-                              {this.convertFull(item.end_date)}
-                            </li>
-                          </div>
-                        )}
-                      </div>
+        <div class="episodes">
+          <Fragment className="timeline-space">
+            <Element
+              name="test7"
+              className="element"
+              id="containerElement"
+              style={{
+                position: "relative",
+                height: "600px",
+                overflow: "scroll",
+                marginBottom: "100px",
+                border: "0.01px solid grey"
+              }}
+            >
+              {episodes.map(item => (
+                <div>
+                  <VerticalTimeline>
+                    <VerticalTimelineElement
+                      className="vertical-timeline-element--work"
+                      date={this.convert(item.start_date)}
+                      iconStyle={{
+                        background: "rgb(33, 150, 243)",
+                        color: "#fff"
+                      }}
+                      position={"left"}
+                    >
+                      <h5 className="vertical-timeline-element-title">
+                        {item.Healthcare_provider_name}
+                      </h5>
+                      <ul>
+                        <div>
+                          {item.is_active ? (
+                            <div>
+                              <li>{this.convertFull(item.start_date)}</li>
+                            </div>
+                          ) : (
+                            <div>
+                              <li>
+                                {this.convertFull(item.start_date)} to{" "}
+                                {this.convertFull(item.end_date)}
+                              </li>
+                            </div>
+                          )}
+                        </div>
 
-                      <li>{item.reason}</li>
-                      <li>Dr.{item.physician_name}</li>
-                    </ul>
-                  </VerticalTimelineElement>
-                </VerticalTimeline>
-              </div>
-            ))}
-          </Element>
-        </Fragment>
+                        <li>{item.reason}</li>
+                        <li>Dr.{item.physician_name}</li>
+                      </ul>
+                    </VerticalTimelineElement>
+                  </VerticalTimeline>
+                </div>
+              ))}
+            </Element>
+          </Fragment>
+        </div>
       );
     }
   }

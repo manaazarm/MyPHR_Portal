@@ -20,20 +20,10 @@ class Home extends Component {
     super(props);
 
     this.state = {
-      client: {},
       basicInfo: {}
     };
   }
   componentDidMount() {
-    this.setState({
-      //client: JSON.parse(localStorage.getItem("client"))
-    });
-    userService
-      .getClient(JSON.parse(localStorage.getItem("oneUser")).client_id)
-      .then(data => this.setState({ client: JSON.parse(data) }));
-
-    console.log("sssss" + localStorage.getItem("client"));
-
     userService
       .getBasicInfo(
         JSON.parse(localStorage.getItem("oneUser")).client_id,
@@ -56,7 +46,7 @@ class Home extends Component {
   }
 
   render() {
-    const { client, basicInfo } = this.state;
+    const { basicInfo } = this.state;
     return (
       <Router>
         <div className="App">
@@ -79,7 +69,7 @@ class Home extends Component {
               <div class="column2">
                 <nav class="topnav">
                   <NavLink
-                    to="/"
+                    to="/home"
                     className="nav-style"
                     activeClassName="selectedLink"
                   >
@@ -114,14 +104,12 @@ class Home extends Component {
                 <div class="main-place">
                   <Route
                     exact
-                    path="/"
-                    render={props => <App {...props} user={client.client_id} />}
+                    path="/home"
+                    render={props => <App {...props} />}
                   />
                   <Route
                     path="/profile"
-                    render={props => (
-                      <Profile {...props} user={client.client_id} />
-                    )}
+                    render={props => <Profile {...props} />}
                   />
                   <Route path="/episodes" component={Episodes} />
                   <Route path="/alerts" component={Alerts} />

@@ -4,8 +4,6 @@ import { userService } from "../../service";
 import { ButtonToolbar, Button } from "react-bootstrap";
 import Select from "react-select";
 
-//TO DO: After Save!!!!
-
 const optionsDiet = [
   "vegan",
   "Atkins",
@@ -105,12 +103,7 @@ class EditProfile extends React.Component {
   ID = JSON.parse(localStorage.getItem("oneUser")).client_id;
   handleSubmit(event) {
     event.preventDefault();
-    alert(
-      "new diet:" +
-        JSON.stringify(this.state.newDiet.value) +
-        ", new ad:" +
-        JSON.stringify(this.state.newAdvanceDirective.value)
-    );
+
     //if the value is same as any of the existing diets:
 
     //TO DO: || or &&
@@ -223,7 +216,7 @@ class EditProfile extends React.Component {
                 </div>
               ))}
             </div>
-            <Button variant="secondary" onClick={this.editProfile}>
+            <Button variant="outline-primary" onClick={this.editProfile}>
               Edit
             </Button>
           </div>
@@ -243,13 +236,15 @@ class EditProfile extends React.Component {
                   </div>
                 ))}
               </div>
-              <Select
-                options={diets}
-                value={newDiet}
-                autosize={true}
-                onChange={this.handleChange}
-                placeholder="Add..."
-              />
+              <div style={{ width: "200px" }}>
+                <Select
+                  options={diets}
+                  value={newDiet}
+                  autosize={true}
+                  onChange={this.handleChange}
+                  placeholder="Add..."
+                />
+              </div>
             </p>
             <p>
               {" "}
@@ -263,13 +258,15 @@ class EditProfile extends React.Component {
                   )}
                 </div>
               ))}
-              <Select
-                options={ads}
-                value={newAdvanceDirective}
-                autosize={true}
-                onChange={this.handleChangeAD}
-                placeholder="Add..."
-              />
+              <div style={{ width: "200px" }}>
+                <Select
+                  options={ads}
+                  value={newAdvanceDirective}
+                  autosize={true}
+                  onChange={this.handleChangeAD}
+                  placeholder="Add..."
+                />
+              </div>
             </p>
             <p>
               <strong>Active Diagnosis: </strong>
@@ -316,10 +313,10 @@ class EditProfile extends React.Component {
               ))}
             </div>
             <ButtonToolbar>
-              <Button variant="secondary" onClick={this.handleSubmit}>
+              <Button variant="outline-primary" onClick={this.handleSubmit}>
                 Save
               </Button>
-              <Button variant="secondary" onClick={this.editCancel}>
+              <Button variant="outline-primary" onClick={this.editCancel}>
                 Cancel
               </Button>
             </ButtonToolbar>

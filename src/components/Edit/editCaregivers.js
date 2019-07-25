@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import "../../App.css";
 import { userService } from "../../service";
 import { ButtonToolbar, Button } from "react-bootstrap";
-import AddContact from "./addContact";
-import CaregiverContact from "./caregiverContact";
+import ReactPhoneInput from "react-phone-input-2";
+import "react-phone-input-2/dist/style.css";
 
 /* component for displaying & editing Caregivers */
 //Two api calls, one for name and relationship, the other for contact info
@@ -12,9 +12,6 @@ class EditCaregivers extends React.Component {
   constructor(props, context) {
     super(props, context);
     const clientToEdit = JSON.parse(localStorage.getItem("caregiver"));
-    const caregiverToEdit = JSON.parse(
-      localStorage.getItem("caregiverContactInfo")
-    );
     this.state = {
       isLoading: true,
       caregiver: clientToEdit,
@@ -40,11 +37,15 @@ class EditCaregivers extends React.Component {
     this.editCaregivers = this.editCaregivers.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.addContact = this.addContact.bind(this);
     this.handleChange2 = this.handleChange2.bind(this);
 
     this.handleChangeP = this.handleChangeP.bind(this);
     this.handleChangeS = this.handleChangeS.bind(this);
+
+    this.handleChangeSCP = this.handleChangeSCP.bind(this);
+    this.handleChangeSHP = this.handleChangeSHP.bind(this);
+    this.handleChangePCP = this.handleChangePCP.bind(this);
+    this.handleChangePHP = this.handleChangePHP.bind(this);
   }
 
   componentDidMount() {
@@ -226,7 +227,7 @@ class EditCaregivers extends React.Component {
         });
       });
   }
-  componentWillMount() {}
+
   editCancel() {
     this.setState({
       isEditCaregivers: false
@@ -236,14 +237,6 @@ class EditCaregivers extends React.Component {
     this.setState({
       isEditCaregivers: true
     });
-  }
-  addContact() {
-    this.setState({
-      isAddContact: true
-    });
-    if (this.state.isAddContact) {
-      return <AddContact />;
-    }
   }
 
   handleChange(event) {
@@ -261,11 +254,62 @@ class EditCaregivers extends React.Component {
   handleChangeS(event) {
     this.setState({ [event.target.name]: event.target.value });
   }
+  handleChangeSCP(value) {
+    this.setState({
+      newCP2: value
+    });
+  }
+  handleChangePCP(value) {
+    this.setState({
+      newCP: value
+    });
+  }
+  handleChangeSHP(value) {
+    this.setState({
+      newHP2: value
+    });
+  }
+  handleChangePHP(value) {
+    this.setState({
+      newHP: value
+    });
+  }
 
   TOKEN = JSON.parse(localStorage.getItem("oneUser")).token;
   ID = JSON.parse(localStorage.getItem("oneUser")).client_id;
+
+  handleValidation() {
+    let email = this.state.newEmail;
+    let email2 = this.state.newEmail2;
+    let errors = {};
+    let formIsValid = true;
+
+    //Email
+
+    if (typeof email !== "undefined") {
+      let lastAtPos = email.lastIndexOf("@");
+      let lastDotPos = email.lastIndexOf(".");
+
+      if (
+        !(
+          lastAtPos < lastDotPos &&
+          lastAtPos > 0 &&
+          email.indexOf("@@") == -1 &&
+          lastDotPos > 2 &&
+          email.length - lastDotPos > 2
+        )
+      ) {
+        formIsValid = false;
+        errors["email"] = "Email is not valid";
+      }
+    }
+
+    this.setState({ errors: errors });
+    return formIsValid;
+  }
   handleSubmit(event) {
     event.preventDefault();
+
     //primary
     if (
       this.state.newPN == this.state.primaryName &&
@@ -435,221 +479,244 @@ class EditCaregivers extends React.Component {
       );
       this.setState({ email2: this.state.newEmail2 });
     }
-
     this.setState({ isEditCaregivers: false });
   }
+
   render() {
-    const { caregiver, isEditCaregivers, homeAddress } = this.state;
-    console.log("iddddd:" + homeAddress);
+    const { caregiver, isEditCaregivers } = this.state;
+
     return (
       <div>
         {!isEditCaregivers ? (
           <div>
-            {caregiver.map((careg, index) => (
-              <div>
-                {careg.is_primary ? (
-                  <div>
-                    <p>
-                      <strong>Primary Contact:</strong>{" "}
-                    </p>
-                    <ul>
-                      <li>
-                        <strong>Name: </strong>
-                        {careg.name}
-                      </li>
-
-                      <li>
-                        <strong> Relationship:</strong> {careg.relationship}
-                      </li>
-                      <CaregiverContact
-                        id={careg.client_id}
-                        isEditCaregivers={isEditCaregivers}
-                      />
-                    </ul>
-                  </div>
-                ) : (
-                  <div>
-                    <p>
-                      <strong>Second Contact:</strong>{" "}
-                    </p>
-                    <ul>
-                      <li>
-                        {" "}
-                        <strong>Name: </strong>
-                        {careg.name}
-                      </li>
-                      <li>
-                        <strong> Relationship:</strong> {careg.relationship}{" "}
-                      </li>
-                      <CaregiverContact
-                        id={careg.client_id}
-                        isEditCaregivers={isEditCaregivers}
-                      />
-                    </ul>
-                  </div>
-                )}
+            <div>
+              <div class="primary-contact">
+                <p>
+                  <strong>Primary Contact:</strong>{" "}
+                </p>
+                <ul>
+                  <li>
+                    <strong>Name: </strong>
+                    {this.state.primaryName}
+                  </li>
+                  <li>
+                    <strong> Relationship:</strong>{" "}
+                    {this.state.primaryRelationship}
+                  </li>
+                  <li>
+                    <strong> Home Address: </strong> {this.state.homeAddress}
+                  </li>
+                  <li>
+                    <strong> Mailing Address: </strong>{" "}
+                    {this.state.mailingAddress}
+                  </li>
+                  <li>
+                    <strong>Cell Phone: </strong>
+                    {this.state.cellPhone}
+                  </li>
+                  <li>
+                    <strong> Home Phone:</strong> {this.state.homePhone}
+                  </li>
+                  <strong> Email:</strong> {this.state.email}
+                </ul>
               </div>
-            ))}
-            <Button variant="secondary" onClick={this.editCaregivers}>
+              <div>
+                <p>
+                  <strong>Second Contact:</strong>{" "}
+                </p>
+                <ul>
+                  <li>
+                    {" "}
+                    <strong>Name: </strong>
+                    {this.state.secondName}
+                  </li>
+                  <li>
+                    <strong> Relationship:</strong>{" "}
+                    {this.state.secondRelationship}{" "}
+                  </li>
+                  <li>
+                    <strong> Home Address: </strong> {this.state.homeAddress2}
+                  </li>
+                  <li>
+                    <strong> Mailing Address: </strong>{" "}
+                    {this.state.mailingAddress2}
+                  </li>
+                  <li>
+                    <strong>Cell Phone: </strong>
+                    {this.state.cellPhone2}
+                  </li>
+                  <li>
+                    <strong> Home Phone:</strong> {this.state.homePhone2}
+                  </li>
+                  <strong> Email:</strong> {this.state.email2}
+                </ul>
+              </div>
+            </div>
+
+            <Button variant="outline-primary" onClick={this.editCaregivers}>
               Edit
             </Button>
           </div>
         ) : (
           <div>
-            {caregiver.map((careg, index) => (
+            <div className="edit-scroll">
               <div>
-                {careg.is_primary ? (
-                  <div>
-                    <p>
-                      <strong>Primary Contact:</strong>{" "}
-                    </p>
-                    <ul>
-                      <li>
-                        <strong>Name: </strong>{" "}
-                        <input
-                          value={this.state.newPN}
-                          onChange={this.handleChange}
-                          name="newPN"
-                        />
-                      </li>
-
-                      <li>
-                        <strong> Relationship:</strong>{" "}
-                        <select
-                          value={this.state.newPR}
-                          onChange={this.handleChange}
-                          name="newPR"
-                        >
-                          <option value="father">father</option>
-                          <option value="mother">mother</option>
-                        </select>
-                      </li>
-                      <li>
-                        <strong> Home Address: </strong>{" "}
-                        <input
-                          placeholder="home address"
-                          value={this.state.newHA || ""}
-                          onChange={this.handleChangeP}
-                          name="newHA"
-                        />
-                      </li>
-                      <li>
-                        <strong> Mailing Address:</strong>{" "}
-                        <input
-                          placeholder="mailing address"
-                          value={this.state.newMA || ""}
-                          onChange={this.handleChangeP}
-                          name="newMA"
-                        />
-                      </li>
-                      <li>
-                        <strong>Cell Phone: </strong>
-                        <input
-                          placeholder="cell phone"
-                          value={this.state.newCP || ""}
-                          onChange={this.handleChangeP}
-                          name="newCP"
-                        />
-                      </li>
-                      <li>
-                        <strong> Home Phone:</strong>{" "}
-                        <input
-                          placeholder="home phone"
-                          value={this.state.newHP || ""}
-                          onChange={this.handleChangeP}
-                          name="newHP"
-                        />
-                      </li>
-                      <strong> Email:</strong>
+                <div>
+                  <p>
+                    <strong>Primary Contact:</strong>{" "}
+                  </p>
+                  <ul>
+                    <div class="form-group">
+                      <label for="newPN">Name:</label>
                       <input
-                        type="email"
-                        value={this.state.newEmail}
+                        value={this.state.newPN}
+                        onChange={this.handleChange}
+                        name="newPN"
+                      />
+                    </div>
+
+                    <li>
+                      <strong> Relationship:</strong>{" "}
+                      <select
+                        value={this.state.newPR}
+                        onChange={this.handleChange}
+                        name="newPR"
+                      >
+                        <option value="father">father</option>
+                        <option value="mother">mother</option>
+                      </select>
+                    </li>
+                    <li>
+                      <strong> Home Address: </strong>{" "}
+                      <input
+                        class="form-control"
+                        placeholder="home address"
+                        value={this.state.newHA || ""}
                         onChange={this.handleChangeP}
-                        name="newEmail"
+                        name="newHA"
                       />
-                    </ul>
-                  </div>
-                ) : (
-                  <div>
-                    <p>
-                      <strong>Second Contact:</strong>{" "}
-                    </p>
-                    <ul>
-                      <li>
-                        <strong>Name: </strong>{" "}
-                        <input
-                          value={this.state.newSPN}
-                          onChange={this.handleChange2}
-                          name="newSPN"
-                        />
-                      </li>
-                      <li>
-                        <strong> Relationship:</strong>{" "}
-                        <select
-                          value={this.state.newSPR}
-                          onChange={this.handleChange2}
-                          name="newSPR"
-                        >
-                          <option value="father">father</option>
-                          <option value="mother">mother</option>
-                          <option value="uncle">uncle</option>
-                          <option value="aunt">aunt</option>
-                        </select>
-                      </li>
-                      <li>
-                        <strong> Home Address: </strong>{" "}
-                        <input
-                          placeholder="home address"
-                          value={this.state.newHA2 || ""}
-                          onChange={this.handleChangeS}
-                          name="newHA2"
-                        />
-                      </li>
-                      <li>
-                        <strong> Mailing Address:</strong>{" "}
-                        <input
-                          placeholder="mailing address"
-                          value={this.state.newMA2 || ""}
-                          onChange={this.handleChangeS}
-                          name="newMA2"
-                        />
-                      </li>
-                      <li>
-                        <strong>Cell Phone: </strong>
-                        <input
-                          placeholder="cell phone"
-                          value={this.state.newCP2 || ""}
-                          onChange={this.handleChangeS}
-                          name="newCP2"
-                        />
-                      </li>
-                      <li>
-                        <strong> Home Phone:</strong>{" "}
-                        <input
-                          placeholder="home phone"
-                          value={this.state.newHP2 || ""}
-                          onChange={this.handleChangeS}
-                          name="newHP2"
-                        />
-                      </li>
-                      <strong> Email:</strong>
+                    </li>
+                    <li>
+                      <strong> Mailing Address:</strong>{" "}
                       <input
-                        type="email"
-                        value={this.state.newEmail2}
-                        onChange={this.handleChangeS}
-                        name="newEmail2"
+                        class="form-control"
+                        placeholder="mailing address"
+                        value={this.state.newMA || ""}
+                        onChange={this.handleChangeP}
+                        name="newMA"
                       />
-                    </ul>
-                  </div>
-                )}
-              </div>
-            ))}
+                    </li>
+                    <li>
+                      <strong>Cell Phone: </strong>
+                      <ReactPhoneInput
+                        placeholder="Enter phone number"
+                        defaultCountry={"ca"}
+                        value={this.state.newCP || ""}
+                        onChange={this.handleChangeHCP}
+                      />
+                    </li>
+                    <li>
+                      <strong> Home Phone:</strong>{" "}
+                      <ReactPhoneInput
+                        placeholder="Enter phone number"
+                        defaultCountry={"ca"}
+                        value={this.state.newHP || ""}
+                        onChange={this.handleChangePHP}
+                      />
+                    </li>
+                    <strong> Email:</strong>
+                    <input
+                      class="form-control"
+                      type="email"
+                      value={this.state.newEmail}
+                      onChange={this.handleChangeP}
+                      name="newEmail"
+                    />
+                  </ul>
+                </div>
 
+                <div>
+                  <p>
+                    <strong>Second Contact:</strong>{" "}
+                  </p>
+                  <ul>
+                    <div class="form-group">
+                      <label for="newSPN">Name:</label>
+                      <input
+                        value={this.state.newSPN}
+                        onChange={this.handleChange2}
+                        name="newSPN"
+                      />
+                    </div>
+
+                    <li>
+                      <strong> Relationship:</strong>{" "}
+                      <select
+                        value={this.state.newSPR}
+                        onChange={this.handleChange2}
+                        name="newSPR"
+                      >
+                        <option value="father">father</option>
+                        <option value="mother">mother</option>
+                        <option value="uncle">uncle</option>
+                        <option value="aunt">aunt</option>
+                      </select>
+                    </li>
+                    <li>
+                      <strong> Home Address: </strong>{" "}
+                      <input
+                        class="form-control"
+                        placeholder="home address"
+                        value={this.state.newHA2 || ""}
+                        onChange={this.handleChangeS}
+                        name="newHA2"
+                      />
+                    </li>
+                    <li>
+                      <strong> Mailing Address:</strong>{" "}
+                      <input
+                        class="form-control"
+                        placeholder="mailing address"
+                        value={this.state.newMA2 || ""}
+                        onChange={this.handleChangeS}
+                        name="newMA2"
+                      />
+                    </li>
+                    <li>
+                      <strong>Cell Phone: </strong>
+                      <ReactPhoneInput
+                        placeholder="Enter phone number"
+                        defaultCountry={"ca"}
+                        value={this.state.newCP2 || ""}
+                        onChange={this.handleChangeSCP}
+                      />
+                    </li>
+                    <li>
+                      <strong> Home Phone:</strong>{" "}
+                      <ReactPhoneInput
+                        placeholder="Enter phone number"
+                        defaultCountry={"ca"}
+                        value={this.state.newHP2 || ""}
+                        onChange={this.handleChangeSHP}
+                      />
+                    </li>
+                    <strong> Email:</strong>
+                    <input
+                      class="form-control"
+                      type="email"
+                      value={this.state.newEmail2}
+                      onChange={this.handleChangeS}
+                      name="newEmail2"
+                    />
+                  </ul>
+                </div>
+              </div>
+            </div>
             <ButtonToolbar>
-              <Button variant="secondary" onClick={this.handleSubmit}>
+              <Button variant="outline-primary" onClick={this.handleSubmit}>
                 Save
               </Button>
-              <Button variant="secondary" onClick={this.editCancel}>
+              <Button variant="outline-primary" onClick={this.editCancel}>
                 Cancel
               </Button>
             </ButtonToolbar>

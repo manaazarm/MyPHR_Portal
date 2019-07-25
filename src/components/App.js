@@ -1,20 +1,20 @@
 import React, { Component } from "react";
 import "../App.css";
 import Gallery from "react-grid-gallery";
-//import HeartRates from "./images/HeartRates.jpg";
+import { userService } from "../service";
 
 const IMAGES = [
   {
-    src: {},
-    thumbnail: {},
+    src: "https://i.ibb.co/vDTckxF/Heart-Rates.jpg",
+    thumbnail: "https://i.ibb.co/vDTckxF/Heart-Rates.jpg",
     thumbnailWidth: 320,
-    thumbnailHeight: 174,
+    thumbnailHeight: 204,
     caption: "Heart Rates"
   },
 
   {
-    src: "./images/StepsGraph.jpg",
-    thumbnail: "./images/StepsGraph.jpg",
+    src: "https://i.ibb.co/tHw0XfM/Steps-Graph.jpg",
+    thumbnail: "https://i.ibb.co/tHw0XfM/Steps-Graph.jpg",
     thumbnailWidth: 320,
     thumbnailHeight: 212,
     caption: "Steps"
@@ -31,28 +31,75 @@ class App extends React.Component {
       error: null
     };
   }
-  fetchUsers(id) {
-    // Where we're fetching data from
-    fetch(`https://5cdc6232069eb30014202d8e.mockapi.io/caregivers/${id}`)
-      // We get the API response and receive data in JSON format...
-      .then(response => response.json())
-      // ...then we update the users state
+
+  componentDidMount() {
+    this.setState({
+      user: JSON.parse(localStorage.getItem("oneUser"))
+      //basicInfo: JSON.parse(localStorage.getItem("basicInfo"))
+    });
+
+    /***
+     * real api calls
+     * contactInfo JSON format has error when printing
+     */
+
+    userService
+      .getBasicInfo(
+        JSON.parse(localStorage.getItem("oneUser")).client_id,
+        JSON.parse(localStorage.getItem("oneUser")).user_id,
+        JSON.parse(localStorage.getItem("oneUser")).token
+      )
+      .then(data => this.setState({ basicInfo: data }));
+    userService
+      .getHealthProfile(
+        JSON.parse(localStorage.getItem("oneUser")).client_id,
+        JSON.parse(localStorage.getItem("oneUser")).token
+      )
+      .then(data => this.setState({ healthProfile: data }));
+
+    userService
+      .getContactInfo(
+        JSON.parse(localStorage.getItem("oneUser")).client_id,
+        1,
+        JSON.parse(localStorage.getItem("oneUser")).token
+      )
       .then(data =>
         this.setState({
-          caregiver: data,
-          isLoading: false
+          contactInfo: data
         })
-      )
-      // Catch any errors we hit and update the app
-      .catch(error => this.setState({ error, isLoading: false }));
-  }
-  componentDidMount() {
-    this.fetchUsers(12);
-  }
+      );
 
+    userService
+      .getCaregiver(
+        JSON.parse(localStorage.getItem("oneUser")).client_id,
+        JSON.parse(localStorage.getItem("oneUser")).token,
+        1
+      )
+      .then(data => this.setState({ caregiver: data }));
+
+    userService
+      .getPhysician(
+        JSON.parse(localStorage.getItem("oneUser")).client_id,
+        JSON.parse(localStorage.getItem("oneUser")).token,
+        1
+      )
+      .then(data =>
+        this.setState({
+          physician: data
+        })
+      );
+  }
   render() {
     return (
-      <div>
+      <div
+        style={{
+          position: "relative",
+          height: "600px",
+          overflow: "scroll",
+          marginBottom: "100px",
+          border: "0.1px solid white"
+        }}
+      >
         <h1>Today's Activities</h1>
         <Gallery images={IMAGES} />
       </div>
