@@ -2,10 +2,10 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import "./App.css";
-import LoginForm from "./login.js";
+import LoginForm from "./components/Login/login.js";
 import * as serviceWorker from "./serviceWorker";
-import Home from "./home";
-import App from "./App";
+import Home from "./components/home";
+import App from "./components/App";
 import { PrivateRoute } from "./privateRoute";
 import { configureBackend } from "./backend";
 import { Route, BrowserRouter as Router } from "react-router-dom";
@@ -14,7 +14,7 @@ configureBackend();
 const routing = (
   <Router>
     <Route path="/login" component={LoginForm} />
-    <PrivateRoute exact path="/" component={Home} />
+    <PrivateRoute exact path="/home" component={Home} />
   </Router>
 );
 
