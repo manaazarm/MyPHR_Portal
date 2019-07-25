@@ -114,7 +114,7 @@ function getBasicInfo(client_id, user_id, token) {
 function getContactInfo(client_id, is_active, token) {
   localStorage.removeItem("contactInfo");
   return fetch(
-    `http://localhost:5000/contact_info?client_id=${client_id}&is_active=${is_active}&token=${token}`
+    `${api_url}/contact_info?client_id=${client_id}&is_active=${is_active}&token=${token}`
   )
     .then(handleResponse)
     .then(contactInfo => {

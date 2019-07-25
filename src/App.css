@@ -2,7 +2,7 @@
   text-align: center;
 }
 body {
-  margin-top: -100px;
+  margin-top: -10%;
 }
 .App-logo {
   animation: App-logo-spin infinite 20s linear;
@@ -14,7 +14,7 @@ img {
   border-radius: 4px;
   padding: 5px;
   margin: -55px 0 50px -50px;
-  height: 55%;
+  height: 50%;
   width: 100%;
   position: absolute;
 }
@@ -52,6 +52,7 @@ ul {
 .topnav {
   border-bottom: 0.1px solid gray;
   padding-bottom: 7px;
+  position: relative;
 }
 .selectedLink {
   border-top: 0.1px solid gray;
@@ -65,19 +66,15 @@ ul {
   margin-right: 20px;
 }
 
-.editor {
-  margin-top: 50px;
-  margin-left: -10px;
-  position: absolute;
-}
 .editor a {
   float: left;
   color: blue;
   text-align: center;
-  padding-bottom: 10px;
-  padding-left: 40px;
+  padding-bottom: 10%;
+  padding-left: 50px;
   text-decoration: underline;
-  font-size: 12px;
+  font-size: 14px;
+  position: absolute;
 }
 .account {
   margin-top: 5px;
@@ -89,7 +86,7 @@ ul {
 /* Create two equal columns that floats next to each other */
 .column1 {
   float: left;
-  width: 20%;
+  width: 25;
   height: 10;
   padding: 50px;
   border: 1px solid grey;
@@ -99,7 +96,7 @@ ul {
 }
 .column2 {
   float: left;
-  width: 67%;
+  width: 70%;
   padding: 10px;
   position: relative;
 }
@@ -206,6 +203,13 @@ ul {
 
 .tab-content {
   background-image: url(./images/doctors_blured.jpg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100%;
+}
+.alerts-container {
+  background-image: url(./images/books.jpg);
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;

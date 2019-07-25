@@ -35,6 +35,7 @@ class Alerts extends React.Component {
 
     return (
       <div
+        class="alerts-container"
         style={{
           position: "relative",
           height: "600px",
