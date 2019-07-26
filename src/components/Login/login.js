@@ -48,13 +48,13 @@ class LoginForm extends React.Component {
     userService.newLogin(username, password).then(
       user => {
         const { from } = this.props.location.state || {
-          from: { pathname: "/home" }
+          from: { pathname: "/" }
         };
         this.props.history.push(from);
       },
       error => this.setState({ error, loading: false })
     );
-    this.props.history.push("/home");
+    this.props.history.push("/");
   }
 
   render() {

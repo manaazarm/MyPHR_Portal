@@ -69,7 +69,8 @@ class Home extends Component {
               <div class="column2">
                 <nav class="topnav">
                   <NavLink
-                    to="/home"
+                    exact
+                    to="/"
                     className="nav-style"
                     activeClassName="selectedLink"
                   >
@@ -102,11 +103,7 @@ class Home extends Component {
                 </nav>
 
                 <div class="main-place">
-                  <Route
-                    exact
-                    path="/home"
-                    render={props => <App {...props} />}
-                  />
+                  <Route exact path="/" render={props => <App {...props} />} />
                   <Route
                     path="/profile"
                     render={props => <Profile {...props} />}

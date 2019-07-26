@@ -14,7 +14,7 @@ configureBackend();
 const routing = (
   <Router>
     <Route path="/login" component={LoginForm} />
-    <PrivateRoute exact path="/home" component={Home} />
+    <PrivateRoute exact path="/" component={Home} />
   </Router>
 );
 
