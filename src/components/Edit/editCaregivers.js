@@ -230,7 +230,23 @@ class EditCaregivers extends React.Component {
 
   editCancel() {
     this.setState({
-      isEditCaregivers: false
+      isEditCaregivers: false,
+      newPN: this.state.primaryName,
+      newPR: this.state.primaryRelationship,
+      newSPN: this.state.secondName,
+      newSPR: this.state.secondRelationship,
+      newHA: this.state.homeAddress,
+      newMA: this.state.mailingAddress,
+
+      newCP: this.state.cellPhone,
+      newHP: this.state.homePhone,
+      newEmail: this.state.email,
+      newHA2: this.state.homeAddress2,
+      newMA2: this.state.mailingAddress2,
+
+      newCP2: this.state.cellPhone2,
+      newHP2: this.state.homePhone2,
+      newEmail2: this.state.email2
     });
   }
   editCaregivers() {

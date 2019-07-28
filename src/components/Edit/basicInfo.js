@@ -74,7 +74,8 @@ class BasicInfo extends React.Component {
   }
   editCancel() {
     this.setState({
-      isEditBasic: false
+      isEditBasic: false,
+      newLanguage: this.state.service_language
     });
   }
   handleChange(event) {
