@@ -5,8 +5,14 @@ import { ButtonToolbar, Button } from "react-bootstrap";
 import ReactPhoneInput from "react-phone-input-2";
 import "react-phone-input-2/dist/style.css";
 
-/* component for displaying & editing Caregivers */
-//Two api calls, one for name and relationship, the other for contact info
+/**
+ * Profile Caregivers subpage
+ * there are two caregivers: primary and second
+ * patients are allowed to modify each row
+ * caregivers' names and relationships are taken care of by one api call
+ * other contact info are taken care of by another api call
+ * each update calls api one time
+ */
 
 class EditCaregivers extends React.Component {
   constructor(props, context) {
@@ -230,7 +236,23 @@ class EditCaregivers extends React.Component {
 
   editCancel() {
     this.setState({
-      isEditCaregivers: false
+      isEditCaregivers: false,
+      newPN: this.state.primaryName,
+      newPR: this.state.primaryRelationship,
+      newSPN: this.state.secondName,
+      newSPR: this.state.secondRelationship,
+      newHA: this.state.homeAddress,
+      newMA: this.state.mailingAddress,
+
+      newCP: this.state.cellPhone,
+      newHP: this.state.homePhone,
+      newEmail: this.state.email,
+      newHA2: this.state.homeAddress2,
+      newMA2: this.state.mailingAddress2,
+
+      newCP2: this.state.cellPhone2,
+      newHP2: this.state.homePhone2,
+      newEmail2: this.state.email2
     });
   }
   editCaregivers() {

@@ -1,8 +1,12 @@
 import React, { Component } from "react";
 import { GoogleLogin } from "react-google-login";
 import { userService } from "../../service";
-import Home from "../home";
 
+/**
+ * component for google oauth
+ * interface for creating a new user
+ * no implementation of creating new users on api side yet
+ */
 const GOOGLE_CLIENT_ID =
   "815948051102-phukld82ajlo50r9i5kue5arhmp4hclr.apps.googleusercontent.com";
 class OAuth extends Component {

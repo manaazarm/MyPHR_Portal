@@ -2,16 +2,13 @@ import React, { Component } from "react";
 import "../../App.css";
 import { userService } from "../../service";
 import { ButtonToolbar, Button, Form, InputGroup, Col } from "react-bootstrap";
-import axios from "axios";
-import { Field, formInputData, formValidation } from "reactjs-input-validator";
 import ReactPhoneInput from "react-phone-input-2";
 import "react-phone-input-2/dist/style.css";
 
-/*edit components
- *auto complete addresses
- *phone number and email validators
-
- validate all forms when clicking save (before save)
+/**
+ * Profile Contact Info subpage
+ * patients are allowed to modify each row
+ * each update calls different api methods
  */
 class EditContact extends React.Component {
   constructor(props, context) {
@@ -29,23 +26,9 @@ class EditContact extends React.Component {
       coords: {},
       data: {},
 
-      //UPDATING........
       phoneInfo: clientToEdit[1][1],
       emailInfo: clientToEdit[2][1],
       addressInfo: clientToEdit[0][1],
-      homeAddress: {},
-      mailingAddress: {},
-      otherAddress: {},
-      homePhone: {},
-      cellPhone: {},
-      newEmail: {},
-
-      //new input values:
-      newHA: {},
-      newMA: {},
-      newOA: {},
-      newHP: {},
-      newCP: {},
 
       errors: {}
     };
@@ -65,15 +48,16 @@ class EditContact extends React.Component {
   }
 
   componentDidMount() {
+    //get values from contact info JSON array by filtering
     const ha = this.state.addressInfo.filter(word => word.type == "home");
-    if (ha.length != 0) {
+    if (ha.length !== 0) {
       this.setState({ homeAddress: ha[0].address, newHA: ha[0].address });
     } else {
       this.setState({ homeAddress: ha[0], newHA: ha[0] });
     }
 
     const ma = this.state.addressInfo.filter(word => word.type == "mailing");
-    if (ma.length != 0) {
+    if (ma.length !== 0) {
       this.setState({ mailingAddress: ma[0].address, newMA: ma[0].address });
     } else {
       this.setState({ mailingAddress: ma[0], newMA: ma[0] });
@@ -91,9 +75,9 @@ class EditContact extends React.Component {
       this.setState({
         cellPhone: "+" + cp[0].country_code + " " + cp[0].number,
         newCP: "+" + cp[0].country_code + " " + cp[0].number
-      }); ///IF Differnet code????????
+      });
     } else {
-      this.setState({ cellPhone: cp[0], newCP: cp[0] }); ///IF Differnet code????????
+      this.setState({ cellPhone: cp[0], newCP: cp[0] });
     }
 
     const hp = this.state.phoneInfo.filter(word => word.type == "home");
@@ -110,10 +94,16 @@ class EditContact extends React.Component {
   }
   editCancel() {
     this.setState({
-      isEditContact: false
+      isEditContact: false,
+      newHA: this.state.homeAddress,
+      newMA: this.state.mailingAddress,
+      newOA: this.state.otherAddress,
+      newCP: this.state.cellPhone,
+      newHP: this.state.homePhone,
+      newEmail: this.state.emailInfo
     });
   }
-
+  //enable edit page
   editContact() {
     this.setState({
       isEditContact: true
@@ -142,6 +132,7 @@ class EditContact extends React.Component {
     this.setState({ newOA: event.target.value });
   }
 
+  //validate email pattern
   handleValidation() {
     let email = this.state.newEmail;
 
@@ -279,7 +270,6 @@ class EditContact extends React.Component {
       newHP,
       newEmail
     } = this.state;
-    console.log("email in db:" + this.clientToEdit);
 
     return (
       <div>

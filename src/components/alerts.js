@@ -2,6 +2,12 @@ import React, { Component } from "react";
 import "../App.css";
 import { userService } from "../service";
 
+/**
+ * Alerts page
+ * hard coded text currently
+ * getting date from mock api
+ * no implementation in real api yet
+ */
 class Alerts extends React.Component {
   constructor(props, context) {
     super(props, context);
@@ -24,14 +30,10 @@ class Alerts extends React.Component {
         isLoading: false
       })
     );
-
-    console.log("ggg:" + localStorage.getItem("alerts"));
   }
 
   render() {
-    const { alerts, tag, isLoading } = this.state;
-
-    console.log("xx" + JSON.stringify(alerts.tags));
+    const { tag, isLoading } = this.state;
 
     return (
       <div

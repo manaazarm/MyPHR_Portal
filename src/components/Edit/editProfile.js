@@ -16,7 +16,10 @@ const optionsDiet = [
   "Vegetarian"
 ];
 const optionsAD = ["DNR", " Living Will"];
-/*edit components */
+/**
+ * Profile Health Profile subpage
+ * patients are allowed to add Dietary Regimen and Advance Directives options
+ */
 class EditProfile extends React.Component {
   constructor(props, context) {
     super(props, context);
@@ -71,7 +74,7 @@ class EditProfile extends React.Component {
   }
 
   handleChange = newDiet => {
-    //if newDiet == any one of values in this.state.test, newDiet =haha; else newDiet: newDiet
+    //if newDiet == any one of values in this.state.test, newDiet =""; else newDiet: newDiet
     function checkAvailability(arr, val) {
       return arr.some(function(arrVal) {
         return val === arrVal;
@@ -104,9 +107,6 @@ class EditProfile extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
 
-    //if the value is same as any of the existing diets:
-
-    //TO DO: || or &&
     if (this.state.newDiet.value != null && this.state.newDiet.value != "") {
       userService.addDiet(this.ID, this.TOKEN, this.state.newDiet.value);
     }
@@ -139,9 +139,7 @@ class EditProfile extends React.Component {
       label: ad,
       value: ad
     }));
-    console.log("health profile:" + healthProfile);
-    console.log("allDiets:" + JSON.stringify(allDiets));
-    console.log("allADs:" + JSON.stringify(allADs));
+
     return (
       <div>
         {!isEditProfile ? (

@@ -3,7 +3,11 @@ import "../../App.css";
 import { userService } from "../../service";
 import { ButtonToolbar, Button } from "react-bootstrap";
 
-/*edit components */
+/**
+ * component for adding new caregiver
+ * disabled now
+ * no implementation on api side
+ */
 class AddContact extends React.Component {
   render() {
     return (

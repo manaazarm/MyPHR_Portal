@@ -269,8 +269,9 @@ label {
 }
 .episodes {
   background-image: url(./images/doctors_blured.jpg);
+
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  height: 100%;
+  height: 117%;
 }

@@ -9,6 +9,12 @@ import EditProfile from "./Edit/editProfile";
 import EditContact from "./Edit/editContact";
 import EditCaregivers from "./Edit/editCaregivers";
 
+/**
+ * Profile page
+ * implemented with tabbed components
+ * editable subpages are contained in components:
+ * BasicInfo, EditProfile, EditCaregivers, EditContact
+ */
 class Profile extends React.Component {
   constructor(props, context) {
     super(props, context);
