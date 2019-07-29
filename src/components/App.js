@@ -21,7 +21,12 @@ const IMAGES = [
   }
 ];
 
-/*home page */
+/**
+ * dahsboard page
+ * hard coded currently
+ * no implementation on api side
+ */
+
 class App extends React.Component {
   constructor(props, context) {
     super(props, context);
@@ -32,63 +37,6 @@ class App extends React.Component {
     };
   }
 
-  componentDidMount() {
-    this.setState({
-      user: JSON.parse(localStorage.getItem("oneUser"))
-      //basicInfo: JSON.parse(localStorage.getItem("basicInfo"))
-    });
-
-    /***
-     * real api calls
-     * contactInfo JSON format has error when printing
-     */
-
-    userService
-      .getBasicInfo(
-        JSON.parse(localStorage.getItem("oneUser")).client_id,
-        JSON.parse(localStorage.getItem("oneUser")).user_id,
-        JSON.parse(localStorage.getItem("oneUser")).token
-      )
-      .then(data => this.setState({ basicInfo: data }));
-    userService
-      .getHealthProfile(
-        JSON.parse(localStorage.getItem("oneUser")).client_id,
-        JSON.parse(localStorage.getItem("oneUser")).token
-      )
-      .then(data => this.setState({ healthProfile: data }));
-
-    userService
-      .getContactInfo(
-        JSON.parse(localStorage.getItem("oneUser")).client_id,
-        1,
-        JSON.parse(localStorage.getItem("oneUser")).token
-      )
-      .then(data =>
-        this.setState({
-          contactInfo: data
-        })
-      );
-
-    userService
-      .getCaregiver(
-        JSON.parse(localStorage.getItem("oneUser")).client_id,
-        JSON.parse(localStorage.getItem("oneUser")).token,
-        1
-      )
-      .then(data => this.setState({ caregiver: data }));
-
-    userService
-      .getPhysician(
-        JSON.parse(localStorage.getItem("oneUser")).client_id,
-        JSON.parse(localStorage.getItem("oneUser")).token,
-        1
-      )
-      .then(data =>
-        this.setState({
-          physician: data
-        })
-      );
-  }
   render() {
     return (
       <div

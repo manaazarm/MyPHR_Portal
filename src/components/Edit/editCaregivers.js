@@ -5,8 +5,14 @@ import { ButtonToolbar, Button } from "react-bootstrap";
 import ReactPhoneInput from "react-phone-input-2";
 import "react-phone-input-2/dist/style.css";
 
-/* component for displaying & editing Caregivers */
-//Two api calls, one for name and relationship, the other for contact info
+/**
+ * Profile Caregivers subpage
+ * there are two caregivers: primary and second
+ * patients are allowed to modify each row
+ * caregivers' names and relationships are taken care of by one api call
+ * other contact info are taken care of by another api call
+ * each update calls api one time
+ */
 
 class EditCaregivers extends React.Component {
   constructor(props, context) {

@@ -24,6 +24,10 @@ class Home extends Component {
     };
   }
   componentDidMount() {
+    this.setState({
+      user: JSON.parse(localStorage.getItem("oneUser"))
+    });
+
     userService
       .getBasicInfo(
         JSON.parse(localStorage.getItem("oneUser")).client_id,
@@ -31,16 +35,42 @@ class Home extends Component {
         JSON.parse(localStorage.getItem("oneUser")).token
       )
       .then(data => this.setState({ basicInfo: data }));
+    userService
+      .getHealthProfile(
+        JSON.parse(localStorage.getItem("oneUser")).client_id,
+        JSON.parse(localStorage.getItem("oneUser")).token
+      )
+      .then(data => this.setState({ healthProfile: data }));
 
     userService
-      .getEpisodes(
+      .getContactInfo(
+        JSON.parse(localStorage.getItem("oneUser")).client_id,
+        1,
+        JSON.parse(localStorage.getItem("oneUser")).token
+      )
+      .then(data =>
+        this.setState({
+          contactInfo: data
+        })
+      );
+
+    userService
+      .getCaregiver(
+        JSON.parse(localStorage.getItem("oneUser")).client_id,
+        JSON.parse(localStorage.getItem("oneUser")).token,
+        1
+      )
+      .then(data => this.setState({ caregiver: data }));
+
+    userService
+      .getPhysician(
         JSON.parse(localStorage.getItem("oneUser")).client_id,
         JSON.parse(localStorage.getItem("oneUser")).token,
         1
       )
       .then(data =>
         this.setState({
-          episodes_test: data
+          physician: data
         })
       );
   }

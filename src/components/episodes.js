@@ -13,13 +13,15 @@ var Events = Scroll.Events;
 var scroll = Scroll.animateScroll;
 var scrollSpy = Scroll.scrollSpy;
 
+/**
+ * Episdoes page
+ */
 class Episodes extends React.Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
       key: "home",
       episodes: [],
-
       isLoading: true
     };
     this.scrollToTop = this.scrollToTop.bind(this);

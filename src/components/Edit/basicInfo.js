@@ -3,8 +3,11 @@ import "../../App.css";
 import { userService } from "../../service";
 import { ButtonToolbar, Button } from "react-bootstrap";
 
-/* component */
-// With edit page that allows service lanuage changle
+/**
+ * Profile Basic Info subpage
+ * patients are allowed to edit service language
+ * contains retrieving caregiver info to benefit EditCaregivers Component
+ */
 
 class BasicInfo extends React.Component {
   constructor(props, context) {
@@ -80,12 +83,6 @@ class BasicInfo extends React.Component {
   }
   handleChange(event) {
     this.setState({
-      /*
-      basic: {
-        ...this.state.basic,
-        service_language: event.target.value
-      },
-      */
       newLanguage: event.target.value
     });
   }
